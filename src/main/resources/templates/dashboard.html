@@ -2,44 +2,78 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
     <title>Guidance D20 - Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f4f4; }
-        .sidebar { background: linear-gradient(to bottom, #b30000, #4d0000); color: white; width: 250px; padding: 20px; display: flex; flex-direction: column; }
-        .profile-section { text-align: center; margin-bottom: 30px; }
-        .profile-pic { width: 80px; height: 80px; background-color: #ddd; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid white; }
-        .menu-item { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.2); cursor: pointer; }
-        .menu-item:hover { color: #ffcccc; }
-        .logout { margin-top: auto; cursor: pointer; font-weight: bold; }
-        .main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #fff 0%, #ffcccc 100%); position: relative; }
-        .d20-menu { position: relative; width: 400px; height: 400px; }
-        .d20-segment { position: absolute; font-weight: bold; font-size: 24px; color: #660000; text-transform: uppercase; cursor: pointer; text-shadow: 1px 1px 2px white; }
-        .seg-top { top: 20%; left: 35%; }
-        .seg-mid { top: 45%; left: 35%; font-size: 30px; }
-        .seg-left { top: 60%; left: 15%; }
-        .seg-right { top: 60%; right: 15%; }
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+
+        /* Block styling makes the entire row clickable, not just the text */
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; position: relative; padding: 40px; overflow-y: auto; }
+
+        .d20-container { position: relative; width: 400px; height: 450px; display: flex; justify-content: center; align-items: center; }
+        .d20-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; filter: drop-shadow(0px 0px 15px rgba(204, 0, 0, 0.6)); }
+
+        .d20-segment { position: absolute; font-weight: bold; font-size: 18px; color: #ffcccc; text-transform: uppercase; cursor: pointer; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); z-index: 2; text-align: center; transition: transform 0.2s, color 0.2s, text-shadow 0.2s; }
+        .d20-segment:hover { transform: scale(1.15); color: #ffffff; text-shadow: 0px 0px 10px rgba(255, 100, 100, 0.9); }
+
+        .seg-top { top: 15%; left: 50%; transform: translateX(-50%); }
+        .seg-top:hover { transform: translateX(-50%) scale(1.15); }
+        .seg-mid { top: 47%; left: 50%; transform: translate(-50%, -50%); font-size: 26px; color: #ffffff; text-shadow: 0px 0px 8px rgba(255,0,0,0.8); }
+        .seg-mid:hover { transform: translate(-50%, -50%) scale(1.15); }
+        .seg-left { top: 62%; left: 12%; }
+        .seg-right { top: 62%; right: 12%; }
     </style>
 </head>
 <body>
 <div class="sidebar">
     <div class="profile-section">
         <div class="profile-pic"></div>
-        <h2 th:text="${username} + '!'">User!</h2>
-        <a href="#" style="color: white; font-size: 12px;">Check your stuff!</a>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
     </div>
-    <div class="menu-item">Account</div>
-    <div class="menu-item">Messages (3)</div>
-    <div class="menu-item">Settings</div>
+
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a href="#">Messages (3)</a></div>
+    <div class="menu-item"><a href="#">Settings</a></div>
+
     <div class="logout">
-        <a th:href="@{/login}" style="color: white; text-decoration: none;">Log out</a>
+        <a th:href="@{/login}">Log out</a>
     </div>
 </div>
+
 <div class="main-content">
-    <div class="d20-menu">
+    <div class="d20-container">
+        <svg class="d20-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="100,10 190,60 190,160 100,210 10,160 10,60" fill="rgba(102, 0, 0, 0.3)" stroke="#cc0000" stroke-width="2"/>
+            <line x1="100" y1="10" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <line x1="10" y1="60" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <line x1="190" y1="60" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <line x1="100" y1="210" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <line x1="10" y1="160" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <line x1="190" y1="160" x2="100" y2="110" stroke="#cc0000" stroke-width="2"/>
+            <polygon points="55,135 145,135 100,60" fill="rgba(204, 0, 0, 0.15)" stroke="#ff4d4d" stroke-width="2"/>
+        </svg>
+
         <div class="d20-segment seg-top">Community</div>
         <div class="d20-segment seg-mid">Spell<br>Helper</div>
         <div class="d20-segment seg-left">Misc</div>
-        <div class="d20-segment seg-right">Wiki</div>
+        <a th:href="@{/wiki(username=${username})}" class="d20-segment seg-right" style="text-decoration: none;">Wiki</a>
     </div>
 </div>
 </body>

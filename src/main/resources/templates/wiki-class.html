@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title th:text="${dndClass.name} + ' - Guidance D20 Wiki'">Class Wiki</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        /* Shared Sidebar CSS */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; }
+
+        /* Wiki Article CSS */
+        .wiki-container { background: rgba(30, 30, 30, 0.9); padding: 40px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); max-width: 900px; width: 100%; border-top: 5px solid #cc0000; border: 1px solid #660000; border-top: 5px solid #cc0000; }
+        h1 { color: #ffcccc; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-top: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid #4d0000; }
+        .stat-box strong { display: block; color: #ff9999; font-size: 12px; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-box span { font-size: 18px; color: #ffffff; font-weight: bold; }
+
+        .description { line-height: 1.6; color: #dddddd; font-size: 16px; margin-top: 20px; }
+        .description h2 { color: #ffcccc; margin-top: 30px; border-bottom: 1px solid #4d0000; padding-bottom: 5px; }
+        .description h3 { color: #ff9999; margin-top: 20px; }
+
+        /* Table Styling for the Database Seeder */
+        .progression-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; background: rgba(0,0,0,0.2); }
+        .progression-table th, .progression-table td { border: 1px solid #4d0000; padding: 10px; text-align: center; }
+        .progression-table th { background-color: rgba(204,0,0,0.2); color: #ffcccc; text-transform: uppercase; font-size: 12px; }
+        .progression-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.03); }
+        .progression-table tbody tr:hover { background-color: rgba(204,0,0,0.1); }
+
+        .back-link { display: inline-block; margin-bottom: 20px; color: #999; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .back-link:hover { color: #ffcccc; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <div class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <div class="wiki-container">
+        <a th:href="@{/wiki(username=${username})}" class="back-link">← Back to Archives</a>
+
+        <h1 th:text="${dndClass.name}">Class Name</h1>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <strong>Hit Die</strong>
+                <span th:text="${dndClass.hitDie}">d8</span>
+            </div>
+            <div class="stat-box">
+                <strong>Primary Ability</strong>
+                <span th:text="${dndClass.primaryAbility}">Dexterity</span>
+            </div>
+            <div class="stat-box">
+                <strong>Saves</strong>
+                <span th:text="${dndClass.savingThrowProficiencies}">Dex & Int</span>
+            </div>
+        </div>
+
+        <div class="description">
+            <p th:utext="${dndClass.description}">Class description goes here.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

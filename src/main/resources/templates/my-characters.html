@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - My Characters</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
+        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #cc0000; padding-bottom: 15px; }
+        h1 { color: #ffcccc; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .btn-create { background-color: #cc0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .btn-create:hover { background-color: #ff3333; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(204,0,0,0.5); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+        /* Make the card link look seamless */
+        .card-link { text-decoration: none; color: inherit; display: block; outline: none; }
+        .char-card { background: rgba(30, 30, 30, 0.8); border: 1px solid #660000; border-left: 5px solid #cc0000; border-radius: 8px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s; cursor: pointer; }
+        .char-card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(204,0,0,0.4); border-color: #ff3333; }
+        .char-card h2 { margin: 0 0 10px 0; color: #ffcccc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+        .char-info { font-size: 14px; color: #cccccc; margin-bottom: 5px; }
+        .stats-row { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .stat-badge { background: rgba(204,0,0,0.2); border: 1px solid #cc0000; color: #ffcccc; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 12px; }
+        .stat-badge-hp { background: rgba(0, 153, 51, 0.2); border: 1px solid #00cc44; color: #99ff99; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <div class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a href="#">Messages (3)</a></div>
+    <div class="menu-item"><a href="#">Settings</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <div class="header-action">
+        <h1>My Characters</h1>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create">+ New Character</a>
+    </div>
+
+    <div th:if="${characters == null or characters.isEmpty()}" style="text-align: center; color: #999; margin-top: 50px; background: rgba(0,0,0,0.2); padding: 40px; border-radius: 10px; border: 1px dashed #666;">
+        <p>Your adventures have yet to begin. Forge a new hero to start.</p>
+    </div>
+
+    <div class="grid" th:if="${characters != null and !characters.isEmpty()}">
+        <a th:each="char : ${characters}" th:href="@{/character-sheet(username=${username}, id=${char.id})}" class="card-link">
+            <div class="char-card">
+                <h2 th:text="${char.name}">Name</h2>
+                <div class="char-info" th:text="${char.race} + ' ' + ${char.characterClass}">Race Class</div>
+                <div class="char-info" th:text="'Level ' + ${char.level} + ' | ' + ${char.alignment}">Lvl | Alignment</div>
+
+                <div class="stats-row">
+                    <div class="stat-badge" th:text="'AC: ' + ${char.armorClass}">AC</div>
+                    <div class="stat-badge stat-badge-hp" th:text="'HP: ' + ${char.currentHp} + '/' + ${char.maxHitPoints}">HP</div>
+                    <div class="stat-badge" th:text="'SPD: ' + ${char.speed} + 'ft'">SPD</div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

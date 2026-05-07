@@ -1,29 +1,32 @@
 package org.example;
 
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
-    private final List<User> mockedDatabase = new ArrayList<>();
 
-    public UserService() {
-        // Initial mock data
-        mockedDatabase.add(new User("1", "Lathander", "light@domain.com", "password123"));
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+
+        // Seed an initial user if the database is empty
+        if (userRepository.count() == 0) {
+            userRepository.save(new User(null, "Lathander", "light@domain.com", "password123"));
+        }
     }
 
     public Optional<User> authenticate(String usernameOrEmail, String password) {
-        return mockedDatabase.stream()
-                .filter(u -> (u.getUsername().equals(usernameOrEmail) || u.getEmail().equals(usernameOrEmail))
-                        && u.getPassword().equals(password))
-                .findFirst();
+        return userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .filter(u -> u.getPassword().equals(password));
     }
 
     public void registerUser(User user) {
-        user.setId(String.valueOf(mockedDatabase.size() + 1));
-        mockedDatabase.add(user);
+        userRepository.save(user);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
