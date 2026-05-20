@@ -3,6 +3,8 @@ package org.example;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,6 +24,13 @@ public class DndClass {
     private String hitDie;
     private String primaryAbility;
     private String savingThrowProficiencies;
+
+    @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DndSubclass> subclasses = new ArrayList<>();
+
+    // NEW: Link to the Actions/Spells table
+    @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DndAction> actions = new ArrayList<>();
 
     public DndClass(String name, String description, String hitDie, String primaryAbility, String savingThrowProficiencies) {
         this.name = name;

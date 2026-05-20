@@ -73,6 +73,18 @@ public class DatabaseSeeder {
                     """;
 
                 DndClass barbarian = new DndClass("Barbarian", barbarianHtml, "d12", "Strength", "Strength & Constitution");
+                DndAction rageAction = new DndAction(
+                        "Rage", "Class Feature", 1,
+                        "In battle, you fight with primal ferocity. You gain advantage on Strength checks, resistance to bludgeoning, piercing, and slashing damage, and bonus melee damage.",
+                        barbarian,
+                        7,  // Damage (boosts melee significantly)
+                        9,  // Mitigation (resistance halves damage)
+                        3,  // Utility (advantage on athletics checks)
+                        5,  // Roleplay (intimidation, breaking objects)
+                        0,  // Healing
+                        2   // Unity (Mostly selfish, but keeps the frontliner alive)
+                );
+                barbarian.getActions().add(rageAction);
                 classRepository.save(barbarian);
             }
         };

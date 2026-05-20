@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +23,8 @@ public class User {
     private String username;
     private String email;
     private String password;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String profilePicture;
 }

@@ -29,6 +29,7 @@ public class CharacterSheet {
     private int tempHp;
     private int speed;
     private int inspiration;
+    private String hitDice;
 
     // Ability Scores
     private int strength;
@@ -38,8 +39,28 @@ public class CharacterSheet {
     private int wisdom;
     private int charisma;
 
-    // Inventory & Notes
+    // Wealth
+    private int copper;
+    private int silver;
+    private int electrum;
     private int gold;
+    private int platinum;
+
+    // Proficiencies & Traits
+    @Column(length = 2000)
+    private String proficienciesAndLanguages;
+    @Column(length = 2000)
+    private String featuresAndTraits;
+
+    // Roleplay Elements
+    @Column(length = 1000)
+    private String personalityTraits;
+    @Column(length = 1000)
+    private String ideals;
+    @Column(length = 1000)
+    private String bonds;
+    @Column(length = 1000)
+    private String flaws;
 
     @Column(length = 2000)
     private String notes;

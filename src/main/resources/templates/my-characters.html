@@ -38,10 +38,23 @@
 <body>
 <div class="sidebar">
     <div class="profile-section">
-        <div class="profile-pic"></div>
+
+        <form id="pfp-form" th:action="@{/settings/pfp(username=${username})}" method="post" enctype="multipart/form-data">
+            <label for="pfp-upload" class="pfp-label">
+                <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+                     th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
+                     class="profile-pic" alt="Avatar" />
+                <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+
+                <div class="pfp-overlay">UPLOAD</div>
+            </label>
+            <input type="file" id="pfp-upload" name="file" accept="image/png, image/jpeg" style="display: none;" onchange="document.getElementById('pfp-form').submit();">
+        </form>
+
         <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
         <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
     </div>
+
     <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
     <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
     <div class="menu-item"><a href="#">Messages (3)</a></div>
