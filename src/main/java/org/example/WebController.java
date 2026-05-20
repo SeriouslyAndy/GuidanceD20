@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
@@ -19,12 +20,14 @@ public class WebController {
     private final CharacterSheetRepository characterSheetRepository;
     private final DndClassRepository classRepository;
     private final SpellRepository spellRepository;
+    private final SpellzCompare spellzCompare;
 
-    public WebController(UserService userService, CharacterSheetRepository characterSheetRepository, DndClassRepository classRepository, SpellRepository spellRepository) {
+    public WebController(UserService userService, CharacterSheetRepository characterSheetRepository, DndClassRepository classRepository, SpellRepository spellRepository, SpellzCompare spellzCompare) {
         this.userService = userService;
         this.characterSheetRepository = characterSheetRepository;
         this.classRepository = classRepository;
         this.spellRepository = spellRepository;
+        this.spellzCompare = spellzCompare;
     }
 
     @GetMapping("/spell-helper")
@@ -34,6 +37,26 @@ public class WebController {
         // Fetch all spells from MariaDB and pass them to the template
         model.addAttribute("spells", spellRepository.findAll());
         return "spell-helper";
+    }
+
+    /**
+     * NAT_2_0 endpoint - returns the comparison score between two spells
+     * as JSON, consumed by the spell-helper UI.
+     *
+     *   GET /api/compare-spells?a=<spellIdA>&b=<spellIdB>
+     */
+    @GetMapping("/api/compare-spells")
+    @ResponseBody
+    public SpellzCompare.Nat20Result compareSpells(
+            @RequestParam("a") Integer aId,
+            @RequestParam("b") Integer bId) {
+
+        Spell a = spellRepository.findById(aId)
+                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + aId));
+        Spell b = spellRepository.findById(bId)
+                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + bId));
+
+        return spellzCompare.compare(a, b);
     }
 
     @GetMapping("/")

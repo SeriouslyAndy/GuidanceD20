@@ -169,6 +169,7 @@ public class DatabaseSeeder {
         s0.setDescription("You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage.");
         s0.setScoreDamage(3); s0.setScoreMitigation(1); s0.setScoreUtility(2); s0.setScoreRoleplay(1); s0.setScoreHealing(1); s0.setScoreUnity(1);
         s0.setClasses(List.of(sorcerer));
+        s0.setTags(new java.util.ArrayList<>(List.of("damage", "ranged", "single-target", "fire", "cantrip", "no-concentration", "attack-roll")));
         spellRepository.save(s0);
 
         Spell s1 = new Spell();
@@ -177,6 +178,7 @@ public class DatabaseSeeder {
         s1.setDescription("An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC.");
         s1.setScoreDamage(1); s1.setScoreMitigation(6); s1.setScoreUtility(1); s1.setScoreRoleplay(1); s1.setScoreHealing(1); s1.setScoreUnity(1);
         s1.setClasses(List.of(sorcerer));
+        s1.setTags(new java.util.ArrayList<>(List.of("mitigation", "self", "reaction", "no-concentration", "short-duration", "defensive", "force")));
         spellRepository.save(s1);
 
         Spell s2 = new Spell();
@@ -185,6 +187,7 @@ public class DatabaseSeeder {
         s2.setDescription("You suggest a course of activity and magically influence a creature you can see within range that can hear and understand you.");
         s2.setScoreDamage(1); s2.setScoreMitigation(2); s2.setScoreUtility(5); s2.setScoreRoleplay(6); s2.setScoreHealing(1); s2.setScoreUnity(2);
         s2.setClasses(List.of(sorcerer));
+        s2.setTags(new java.util.ArrayList<>(List.of("control", "single-target", "concentration", "social", "long-duration", "mind-affecting", "save-wisdom")));
         spellRepository.save(s2);
 
         Spell s3 = new Spell();
@@ -193,6 +196,7 @@ public class DatabaseSeeder {
         s3.setDescription("A bright streak flashes from your pointing finger to a point you choose within range then blossoms with a low roar into an explosion of flame.");
         s3.setScoreDamage(6); s3.setScoreMitigation(1); s3.setScoreUtility(2); s3.setScoreRoleplay(1); s3.setScoreHealing(1); s3.setScoreUnity(1);
         s3.setClasses(List.of(sorcerer));
+        s3.setTags(new java.util.ArrayList<>(List.of("damage", "area-damage", "fire", "ranged", "no-concentration", "save-dexterity", "iconic")));
         spellRepository.save(s3);
 
         Spell s4 = new Spell();
@@ -201,6 +205,7 @@ public class DatabaseSeeder {
         s4.setDescription("This spell transforms a creature that you can see within range into a new form.");
         s4.setScoreDamage(4); s4.setScoreMitigation(4); s4.setScoreUtility(6); s4.setScoreRoleplay(5); s4.setScoreHealing(3); s4.setScoreUnity(5);
         s4.setClasses(List.of(sorcerer));
+        s4.setTags(new java.util.ArrayList<>(List.of("utility", "transformation", "concentration", "long-duration", "single-target", "save-wisdom")));
         spellRepository.save(s4);
 
         Spell s5 = new Spell();
@@ -209,6 +214,7 @@ public class DatabaseSeeder {
         s5.setDescription("Choose a creature that you can see within range. The target must succeed on a Wisdom saving throw or be paralyzed for the duration.");
         s5.setScoreDamage(1); s5.setScoreMitigation(4); s5.setScoreUtility(6); s5.setScoreRoleplay(2); s5.setScoreHealing(1); s5.setScoreUnity(5);
         s5.setClasses(List.of(sorcerer));
+        s5.setTags(new java.util.ArrayList<>(List.of("control", "single-target", "concentration", "paralysis", "long-duration", "save-wisdom", "mind-affecting")));
         spellRepository.save(s5);
 
         Spell s6 = new Spell();
@@ -217,6 +223,7 @@ public class DatabaseSeeder {
         s6.setDescription("You create a bolt of lightning that arcs toward a target of your choice that you can see within range. Three bolts then leap from that target to as many as three other targets.");
         s6.setScoreDamage(6); s6.setScoreMitigation(1); s6.setScoreUtility(2); s6.setScoreRoleplay(1); s6.setScoreHealing(1); s6.setScoreUnity(2);
         s6.setClasses(List.of(sorcerer));
+        s6.setTags(new java.util.ArrayList<>(List.of("damage", "multi-target", "lightning", "ranged", "no-concentration", "save-dexterity")));
         spellRepository.save(s6);
 
         Spell s7 = new Spell();

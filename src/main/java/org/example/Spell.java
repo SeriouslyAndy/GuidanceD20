@@ -2,6 +2,8 @@ package org.example;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -66,6 +68,16 @@ public class Spell {
 
     @Column(name = "score_unity")
     private int scoreUnity = 1;
+
+    // Flavour tags used by the NAT_2_0 T-score (admin-defined, unlimited).
+    // Example: "concentration", "area-damage", "long-range", "fire".
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "spell_tags",
+            joinColumns = @JoinColumn(name = "spell_id")
+    )
+    @Column(name = "tag")
+    private List<String> tags = new ArrayList<>();
 
     // Connects directly to your main DndClass entity
     @ManyToMany(fetch = FetchType.EAGER)

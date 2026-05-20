@@ -40,6 +40,53 @@
 
         .spell-desc { line-height: 1.6; color: #ccc; font-size: 15px; white-space: pre-wrap; }
         .higher-levels { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #660000; color: #ffcc99; }
+
+        /* ===== Tag chips (T half of NAT_2_0) ===== */
+        .tag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px 0; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid #4d0000; border-radius: 5px; min-height: 40px; }
+        .tag-chip { display: inline-block; padding: 4px 10px; background: linear-gradient(to bottom, #660000, #330000); border: 1px solid #cc0000; border-radius: 12px; font-size: 11px; color: #ffcccc; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
+        .tag-empty { color: #777; font-style: italic; font-size: 12px; padding: 4px 0; }
+        .tag-label { width: 100%; color: #ff9999; font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; }
+
+        /* ===== NAT_2_0 score panel ===== */
+        .nat20-panel { display: none; max-width: 1200px; margin: 30px auto 0 auto; background: linear-gradient(135deg, rgba(40,0,0,0.95), rgba(20,0,0,0.95)); border: 2px solid #cc0000; border-radius: 12px; padding: 30px; box-shadow: 0 10px 40px rgba(204,0,0,0.3); position: relative; overflow: hidden; }
+        .nat20-panel::before { content: ""; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(204,0,0,0.15) 0%, transparent 70%); pointer-events: none; }
+        .nat20-header { text-align: center; color: #ffcccc; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .nat20-total { text-align: center; font-size: 84px; font-weight: 900; line-height: 1; margin-bottom: 5px; text-shadow: 0 0 30px currentColor; font-family: Georgia, "Times New Roman", serif; }
+        .nat20-out-of { text-align: center; color: #999; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; }
+        .nat20-verdict { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 25px; padding: 10px; border-radius: 5px; }
+
+        .nat20-grade-bad    { color: #ff4444; }
+        .nat20-grade-mid    { color: #ffaa33; }
+        .nat20-grade-good   { color: #66ff66; }
+        .nat20-verdict.bad  { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; color: #ffaaaa; }
+        .nat20-verdict.mid  { background: rgba(255,170,51,0.1); border: 1px solid #ffaa33; color: #ffddaa; }
+        .nat20-verdict.good { background: rgba(102,255,102,0.1); border: 1px solid #66ff66; color: #aaffaa; }
+
+        .nat20-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .nat20-half { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 8px; border: 1px solid #4d0000; }
+        .nat20-half-label { color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; }
+        .nat20-half-score { color: #ffcccc; font-size: 28px; font-weight: bold; margin-bottom: 10px; font-family: Georgia, serif; }
+        .nat20-half-score small { color: #777; font-size: 14px; font-weight: normal; }
+        .nat20-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .nat20-bar-fill { height: 100%; background: linear-gradient(to right, #660000, #cc0000, #ff6666); border-radius: 4px; transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .nat20-half-detail { color: #999; font-size: 12px; line-height: 1.4; }
+
+        /* ===== Overlap hexagon ===== */
+        .nat20-overlap-viz { display: flex; flex-direction: column; align-items: center; margin: 0 0 28px 0; position: relative; }
+        .nat20-overlap-viz svg { width: 100%; max-width: 320px; height: auto; }
+        .hex-grid-ring { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 1; }
+        .hex-axis-line { stroke: rgba(255,255,255,0.12); stroke-width: 1; }
+        .hex-axis-label { fill: #ff9999; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .hex-shape-different { fill: rgba(80, 220, 100, 0.32); stroke: #5eff8a; stroke-width: 1.8; stroke-linejoin: round; }
+        .hex-shape-overlap   { fill: rgba(255, 60, 60, 0.78);  stroke: #ff3333; stroke-width: 1.8; stroke-linejoin: round; }
+        .nat20-overlap-pct { display: flex; align-items: baseline; gap: 10px; margin-top: 14px; padding: 10px 24px; background: rgba(0,0,0,0.4); border: 1px solid #4d0000; border-radius: 999px; }
+        .nat20-overlap-pct-label { color: #ff9999; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        .nat20-overlap-pct-value { color: #ffcccc; font-size: 22px; font-weight: 900; font-family: Georgia, serif; }
+        .nat20-legend { display: flex; gap: 22px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+        .nat20-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #ccc; }
+        .legend-swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); }
+        .swatch-different { background: rgba(80, 220, 100, 0.6); border-color: #5eff8a; }
+        .swatch-overlap   { background: rgba(255, 60, 60, 0.85); border-color: #ff3333; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -87,12 +134,16 @@
                     <canvas id="chart-1"></canvas>
                 </div>
 
+                <div class="tag-chips" id="tags-1">
+                    <div class="tag-label">Tags</div>
+                </div>
+
                 <div id="desc-1" class="spell-desc"></div>
                 <div id="higher-1" class="spell-desc higher-levels"></div>
             </div>
         </div>
 
-        <div class="`spell-column">
+        <div class="spell-column">
             <input type="text" id="search-2" class="search-box" list="spell-list" placeholder="Compare with...">
 
             <div id="display-2" class="spell-details">
@@ -110,8 +161,52 @@
                     <canvas id="chart-2"></canvas>
                 </div>
 
+                <div class="tag-chips" id="tags-2">
+                    <div class="tag-label">Tags</div>
+                </div>
+
                 <div id="desc-2" class="spell-desc"></div>
                 <div id="higher-2" class="spell-desc higher-levels"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAT_2_0 score panel - revealed when both spells are picked ===== -->
+    <div id="nat20-panel" class="nat20-panel">
+        <div class="nat20-header">&#9670; NAT 20 COMPATIBILITY &#9670;</div>
+        <div id="nat20-total" class="nat20-total nat20-grade-mid">0.0</div>
+        <div class="nat20-out-of">OUT OF 20</div>
+        <div id="nat20-verdict" class="nat20-verdict mid">Pick two spells to compare</div>
+
+        <!-- ===== Overlap hexagon: both spells drawn on top of each other ===== -->
+        <div class="nat20-overlap-viz">
+            <svg id="nat20-svg" viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg" aria-label="Hexagon overlap visualization">
+                <g id="nat20-grid"></g>
+                <g id="nat20-shapes"></g>
+                <g id="nat20-labels"></g>
+            </svg>
+            <div class="nat20-overlap-pct">
+                <span class="nat20-overlap-pct-label">Overlap</span>
+                <span class="nat20-overlap-pct-value" id="overlap-pct">&mdash;</span>
+            </div>
+            <div class="nat20-legend">
+                <div class="nat20-legend-item"><span class="legend-swatch swatch-different"></span>Different (unique to each spell)</div>
+                <div class="nat20-legend-item"><span class="legend-swatch swatch-overlap"></span>Overlap (both spells cover this)</div>
+            </div>
+        </div>
+
+        <div class="nat20-breakdown">
+            <div class="nat20-half">
+                <div class="nat20-half-label">Main Tags &middot; Hexagon Area</div>
+                <div class="nat20-half-score"><span id="mt-score">0.0</span><small> / 10</small></div>
+                <div class="nat20-bar"><div id="mt-bar" class="nat20-bar-fill" style="width:0%"></div></div>
+                <div class="nat20-half-detail" id="mt-detail">Geometric overlap of the two radar shapes. Less overlap = higher score.</div>
+            </div>
+            <div class="nat20-half">
+                <div class="nat20-half-label">Tags &middot; Jaccard Diversity</div>
+                <div class="nat20-half-score"><span id="t-score">0.0</span><small> / 10</small></div>
+                <div class="nat20-bar"><div id="t-bar" class="nat20-bar-fill" style="width:0%"></div></div>
+                <div class="nat20-half-detail" id="t-detail">Different flavour tags between the two spells. More variety = higher score.</div>
             </div>
         </div>
     </div>
@@ -124,12 +219,187 @@
     let chart1Instance = null;
     let chart2Instance = null;
 
+    // Track which spell is currently selected in each column (by id).
+    // Both must be set for the NAT 20 panel to appear.
+    const selectedIds = { 1: null, 2: null };
+
+    // ---- Hexagon overlap SVG ------------------------------------------------
+    // Axes go clockwise starting at the top, matching the radar chart in
+    // each spell column: Damage, Mitigation, Utility, Roleplay, Healing,
+    // Unity. Stat values run 0..10 and map to a 120px radius.
+    const HEX_LABELS = ['Damage', 'Mitigation', 'Utility', 'Roleplay', 'Healing', 'Unity'];
+    const HEX_R      = 120;   // radius for stat value 10
+    const HEX_MAX    = 10;
+    const LABEL_PAD  = 18;    // extra radius for label placement
+
+    function hexAxis(i) {
+        // -90deg puts axis 0 at the top in SVG coordinates (y-down).
+        const rad = (-90 + i * 60) * Math.PI / 180;
+        return { dx: Math.cos(rad), dy: Math.sin(rad) };
+    }
+
+    function hexPoints(values) {
+        return values.map((v, i) => {
+            const a = hexAxis(i);
+            const r = (HEX_R / HEX_MAX) * v;
+            return (a.dx * r).toFixed(2) + ',' + (a.dy * r).toFixed(2);
+        }).join(' ');
+    }
+
+    function buildHexGrid() {
+        // Concentric rings at 2/4/6/8/10 plus 6 axis lines.
+        let svg = '';
+        for (let step = 2; step <= HEX_MAX; step += 2) {
+            const ringPts = [];
+            for (let i = 0; i < 6; i++) {
+                const a = hexAxis(i);
+                const r = (HEX_R / HEX_MAX) * step;
+                ringPts.push((a.dx * r).toFixed(2) + ',' + (a.dy * r).toFixed(2));
+            }
+            svg += '<polygon class="hex-grid-ring" points="' + ringPts.join(' ') + '" />';
+        }
+        for (let i = 0; i < 6; i++) {
+            const a = hexAxis(i);
+            svg += '<line class="hex-axis-line" x1="0" y1="0" x2="'
+                + (a.dx * HEX_R).toFixed(2) + '" y2="' + (a.dy * HEX_R).toFixed(2) + '" />';
+        }
+        return svg;
+    }
+
+    function buildHexLabels() {
+        let svg = '';
+        for (let i = 0; i < 6; i++) {
+            const a = hexAxis(i);
+            const x = a.dx * (HEX_R + LABEL_PAD);
+            const y = a.dy * (HEX_R + LABEL_PAD);
+            // Tweak anchor by quadrant so labels read nicely outside the hexagon.
+            let anchor = 'middle';
+            if (a.dx >  0.3) anchor = 'start';
+            else if (a.dx < -0.3) anchor = 'end';
+            const dy = a.dy > 0.5 ? 12 : (a.dy < -0.5 ? -4 : 4);
+            svg += '<text class="hex-axis-label" x="' + x.toFixed(1)
+                + '" y="' + (y + dy).toFixed(1) + '" text-anchor="' + anchor + '">'
+                + HEX_LABELS[i] + '</text>';
+        }
+        return svg;
+    }
+
+    function renderOverlapHexagon(spellA, spellB) {
+        const a = [spellA.scoreDamage, spellA.scoreMitigation, spellA.scoreUtility,
+                   spellA.scoreRoleplay, spellA.scoreHealing, spellA.scoreUnity];
+        const b = [spellB.scoreDamage, spellB.scoreMitigation, spellB.scoreUtility,
+                   spellB.scoreRoleplay, spellB.scoreHealing, spellB.scoreUnity];
+        const inter = a.map((v, i) => Math.min(v, b[i]));
+
+        document.getElementById('nat20-grid').innerHTML = buildHexGrid();
+        document.getElementById('nat20-labels').innerHTML = buildHexLabels();
+
+        // Each spell as a green polygon. Where they overlap, two green
+        // layers sit on top of each other - we then paint the geometric
+        // intersection in red on top so that area reads as "overlap".
+        document.getElementById('nat20-shapes').innerHTML =
+              '<polygon class="hex-shape-different" points="' + hexPoints(a) + '" />'
+            + '<polygon class="hex-shape-different" points="' + hexPoints(b) + '" />'
+            + '<polygon class="hex-shape-overlap"   points="' + hexPoints(inter) + '" />';
+    }
+
+    function renderTags(suffix, spell) {
+        const container = document.getElementById('tags-' + suffix);
+        // Clear everything except the static "Tags" label
+        container.innerHTML = '<div class="tag-label">Tags</div>';
+
+        const tags = (spell.tags || []).filter(t => t && t.trim().length);
+        if (tags.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'tag-empty';
+            empty.innerText = 'No tags yet - ask an admin to add some.';
+            container.appendChild(empty);
+            return;
+        }
+        tags.forEach(t => {
+            const chip = document.createElement('span');
+            chip.className = 'tag-chip';
+            chip.innerText = t;
+            container.appendChild(chip);
+        });
+    }
+
+    function gradeClass(total) {
+        if (total < 7)  return { score: 'nat20-grade-bad',  verdict: 'bad',  text: 'Heavy overlap - these spells fill the same role. Consider swapping one out.' };
+        if (total < 13) return { score: 'nat20-grade-mid',  verdict: 'mid',  text: 'Moderate overlap - some redundancy, but defensible.' };
+        if (total < 17) return { score: 'nat20-grade-good', verdict: 'good', text: 'Strong pairing - the two spells complement each other well.' };
+        return            { score: 'nat20-grade-good', verdict: 'good', text: 'NAT 20! These spells barely overlap at all - excellent variety.' };
+    }
+
+    function updateNat20Panel() {
+        const panel = document.getElementById('nat20-panel');
+        const idA = selectedIds[1];
+        const idB = selectedIds[2];
+
+        if (!idA || !idB) {
+            panel.style.display = 'none';
+            return;
+        }
+
+        // Look up the full spell objects from the data the server gave us -
+        // we already have everything we need to draw the hexagons locally.
+        const spellA = spellsData.find(s => s.id === idA);
+        const spellB = spellsData.find(s => s.id === idB);
+        if (spellA && spellB) {
+            renderOverlapHexagon(spellA, spellB);
+        }
+
+        // Reveal the panel optimistically, fill it once the score arrives.
+        panel.style.display = 'block';
+
+        fetch('/api/compare-spells?a=' + idA + '&b=' + idB)
+            .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+            .then(result => {
+                const total = result.totalScore;
+                const mt    = result.mainTagScore;
+                const t     = result.tagScore;
+                const grade = gradeClass(total);
+
+                const totalEl = document.getElementById('nat20-total');
+                totalEl.innerText = total.toFixed(1);
+                totalEl.className = 'nat20-total ' + grade.score;
+
+                const verdictEl = document.getElementById('nat20-verdict');
+                verdictEl.innerText = grade.text;
+                verdictEl.className = 'nat20-verdict ' + grade.verdict;
+
+                document.getElementById('mt-score').innerText = mt.toFixed(1);
+                document.getElementById('t-score').innerText  = t.toFixed(1);
+                document.getElementById('mt-bar').style.width = (mt * 10) + '%';
+                document.getElementById('t-bar').style.width  = (t  * 10) + '%';
+
+                document.getElementById('mt-detail').innerText =
+                    'Hexagon overlap: ' + result.overlapArea.toFixed(1) +
+                    ' of ' + result.hexAreaA.toFixed(1) + ' / ' + result.hexAreaB.toFixed(1) + ' unit areas.';
+
+                // Overlap percentage shown under the hexagon viz.
+                // We use Intersection over Union so 0% = totally different,
+                // 100% = identical. Matches what the MT score is built from.
+                const union = result.hexAreaA + result.hexAreaB - result.overlapArea;
+                const overlapPct = union > 0 ? (result.overlapArea / union) * 100 : 0;
+                document.getElementById('overlap-pct').innerText = overlapPct.toFixed(1) + '%';
+            })
+            .catch(err => {
+                console.error('NAT_2_0 fetch failed:', err);
+                document.getElementById('nat20-verdict').innerText =
+                    'Could not load score - check the server.';
+            });
+    }
+
     function renderSpell(inputElementId, displayIdSuffix) {
         const inputVal = document.getElementById(inputElementId).value;
         const displayDiv = document.getElementById('display-' + displayIdSuffix);
         const spell = spellsData.find(s => s.name.toLowerCase() === inputVal.toLowerCase());
 
         if (spell) {
+            // Remember the selection so the NAT 20 panel can use it.
+            selectedIds[displayIdSuffix] = spell.id;
+
             // 1. UNHIDE THE DIV FIRST (Crucial for Chart.js)
             displayDiv.style.display = 'block';
 
@@ -157,6 +427,9 @@
             } else {
                 higherDiv.style.display = 'none';
             }
+
+            // Tags
+            renderTags(displayIdSuffix, spell);
 
             // 3. Draw the Radar Chart (Now that the div is visible)
             const ctx = document.getElementById('chart-' + displayIdSuffix).getContext('2d');
@@ -191,7 +464,7 @@
                     scales: {
                         r: {
                             min: 0,
-                            max: 6,
+                            max: 10,
                             ticks: { stepSize: 1, display: false },
                             grid: { color: 'rgba(255, 255, 255, 0.1)' },
                             angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
@@ -210,8 +483,12 @@
 
         } else {
             // Hide the div if the search is empty or invalid
+            selectedIds[displayIdSuffix] = null;
             displayDiv.style.display = 'none';
         }
+
+        // Re-evaluate the NAT 20 panel any time a selection changes.
+        updateNat20Panel();
     }
 
     document.getElementById('search-1').addEventListener('input', () => renderSpell('search-1', '1'));
