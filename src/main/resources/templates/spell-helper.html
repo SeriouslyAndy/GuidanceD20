@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - Spell Helper</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        /* Consistent Sidebar */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
+
+        .header-title { color: #ffcccc; border-bottom: 2px solid #cc0000; padding-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: 0; margin-bottom: 30px; }
+
+        .compare-container { display: flex; gap: 30px; width: 100%; max-width: 1200px; margin: 0 auto; }
+        .spell-column { flex: 1; background: rgba(30, 30, 30, 0.9); padding: 30px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); border: 1px solid #660000; border-top: 5px solid #cc0000; display: flex; flex-direction: column; }
+
+        .search-box { width: 100%; padding: 12px; border: 1px solid #4d0000; border-radius: 5px; font-size: 16px; background: rgba(0,0,0,0.5); color: white; margin-bottom: 20px; box-sizing: border-box; }
+        .search-box:focus { outline: none; border-color: #cc0000; }
+
+        .spell-details { display: none; } /* Hidden until a spell is selected */
+        .spell-title { color: #ffcccc; text-transform: uppercase; margin-top: 0; margin-bottom: 5px; font-size: 24px; }
+        .spell-subtitle { color: #999; font-style: italic; margin-bottom: 20px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 5px; border: 1px solid #4d0000; }
+        .stat-item label { display: block; color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+        .stat-item span { color: #fff; font-size: 14px; }
+
+        .spell-desc { line-height: 1.6; color: #ccc; font-size: 15px; white-space: pre-wrap; }
+        .higher-levels { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #660000; color: #ffcc99; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+             th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
+             class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <h1 class="header-title">Spell Helper Archive</h1>
+
+    <datalist id="spell-list">
+        <option th:each="spell : ${spells}" th:value="${spell.name}"></option>
+    </datalist>
+
+    <div class="compare-container">
+        <div class="spell-column">
+            <input type="text" id="search-1" class="search-box" list="spell-list" placeholder="Search for a spell...">
+
+            <div id="display-1" class="spell-details">
+                <h2 id="title-1" class="spell-title"></h2>
+                <div id="subtitle-1" class="spell-subtitle"></div>
+
+                <div class="stat-grid">
+                    <div class="stat-item"><label>Casting Time</label><span id="time-1"></span></div>
+                    <div class="stat-item"><label>Range</label><span id="range-1"></span></div>
+                    <div class="stat-item"><label>Components</label><span id="comp-1"></span></div>
+                    <div class="stat-item"><label>Duration</label><span id="dur-1"></span></div>
+                </div>
+
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-1"></canvas>
+                </div>
+
+                <div id="desc-1" class="spell-desc"></div>
+                <div id="higher-1" class="spell-desc higher-levels"></div>
+            </div>
+        </div>
+
+        <div class="`spell-column">
+            <input type="text" id="search-2" class="search-box" list="spell-list" placeholder="Compare with...">
+
+            <div id="display-2" class="spell-details">
+                <h2 id="title-2" class="spell-title"></h2>
+                <div id="subtitle-2" class="spell-subtitle"></div>
+
+                <div class="stat-grid">
+                    <div class="stat-item"><label>Casting Time</label><span id="time-2"></span></div>
+                    <div class="stat-item"><label>Range</label><span id="range-2"></span></div>
+                    <div class="stat-item"><label>Components</label><span id="comp-2"></span></div>
+                    <div class="stat-item"><label>Duration</label><span id="dur-2"></span></div>
+                </div>
+
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-2"></canvas>
+                </div>
+
+                <div id="desc-2" class="spell-desc"></div>
+                <div id="higher-2" class="spell-desc higher-levels"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const spellsData = /*[[${spells}]]*/ [];
+
+    // Track instances to prevent overlapping charts
+    let chart1Instance = null;
+    let chart2Instance = null;
+
+    function renderSpell(inputElementId, displayIdSuffix) {
+        const inputVal = document.getElementById(inputElementId).value;
+        const displayDiv = document.getElementById('display-' + displayIdSuffix);
+        const spell = spellsData.find(s => s.name.toLowerCase() === inputVal.toLowerCase());
+
+        if (spell) {
+            // 1. UNHIDE THE DIV FIRST (Crucial for Chart.js)
+            displayDiv.style.display = 'block';
+
+            // 2. Populate Text
+            document.getElementById('title-' + displayIdSuffix).innerText = spell.name;
+            let levelText = spell.spellLevel === 0 ? "Cantrip" : "Level " + spell.spellLevel;
+            document.getElementById('subtitle-' + displayIdSuffix).innerText = levelText + " " + spell.school;
+
+            document.getElementById('time-' + displayIdSuffix).innerText = spell.castingTime;
+            document.getElementById('range-' + displayIdSuffix).innerText = spell.spellRange;
+            document.getElementById('dur-' + displayIdSuffix).innerText = spell.duration;
+
+            let comps = [];
+            if(spell.compV) comps.push("V");
+            if(spell.compS) comps.push("S");
+            if(spell.compM) comps.push("M (" + (spell.materials || "") + ")");
+            document.getElementById('comp-' + displayIdSuffix).innerText = comps.join(", ");
+
+            document.getElementById('desc-' + displayIdSuffix).innerText = spell.description;
+
+            const higherDiv = document.getElementById('higher-' + displayIdSuffix);
+            if (spell.higherLevels) {
+                higherDiv.style.display = 'block';
+                higherDiv.innerText = spell.higherLevels;
+            } else {
+                higherDiv.style.display = 'none';
+            }
+
+            // 3. Draw the Radar Chart (Now that the div is visible)
+            const ctx = document.getElementById('chart-' + displayIdSuffix).getContext('2d');
+
+            // Destroy the old chart if a user searches a new spell in the same column
+            if (displayIdSuffix === '1' && chart1Instance) chart1Instance.destroy();
+            if (displayIdSuffix === '2' && chart2Instance) chart2Instance.destroy();
+
+            const chartConfig = {
+                type: 'radar',
+                data: {
+                    labels: ['Damage', 'Mitigation', 'Utility', 'Roleplay', 'Healing', 'Unity'],
+                    datasets: [{
+                        label: spell.name,
+                        data: [
+                            spell.scoreDamage,
+                            spell.scoreMitigation,
+                            spell.scoreUtility,
+                            spell.scoreRoleplay,
+                            spell.scoreHealing,
+                            spell.scoreUnity
+                        ],
+                        backgroundColor: 'rgba(204, 0, 0, 0.4)',
+                        borderColor: '#cc0000',
+                        pointBackgroundColor: '#ffcccc',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#cc0000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 6,
+                            ticks: { stepSize: 1, display: false },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#ffcccc', font: { size: 12, weight: 'bold' } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            };
+
+            if (displayIdSuffix === '1') {
+                chart1Instance = new Chart(ctx, chartConfig);
+            } else {
+                chart2Instance = new Chart(ctx, chartConfig);
+            }
+
+        } else {
+            // Hide the div if the search is empty or invalid
+            displayDiv.style.display = 'none';
+        }
+    }
+
+    document.getElementById('search-1').addEventListener('input', () => renderSpell('search-1', '1'));
+    document.getElementById('search-2').addEventListener('input', () => renderSpell('search-2', '2'));
+</script>
+</body>
+</html>

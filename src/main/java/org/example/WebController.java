@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +17,23 @@ public class WebController {
 
     private final UserService userService;
     private final CharacterSheetRepository characterSheetRepository;
+    private final DndClassRepository classRepository;
+    private final SpellRepository spellRepository;
 
-    public WebController(UserService userService, CharacterSheetRepository characterSheetRepository) {
+    public WebController(UserService userService, CharacterSheetRepository characterSheetRepository, DndClassRepository classRepository, SpellRepository spellRepository) {
         this.userService = userService;
         this.characterSheetRepository = characterSheetRepository;
+        this.classRepository = classRepository;
+        this.spellRepository = spellRepository;
+    }
+
+    @GetMapping("/spell-helper")
+    public String spellHelper(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+
+        // Fetch all spells from MariaDB and pass them to the template
+        model.addAttribute("spells", spellRepository.findAll());
+        return "spell-helper";
     }
 
     @GetMapping("/")
@@ -78,13 +93,17 @@ public class WebController {
 
         if (userOpt.isPresent()) {
             if (id != null) {
-                // Load existing character
                 Optional<CharacterSheet> existing = characterSheetRepository.findByIdAndUserId(id, userOpt.get().getId());
                 model.addAttribute("sheet", existing.orElseGet(this::createDefaultSheet));
             } else {
-                // Provide a fresh template for new characters
                 model.addAttribute("sheet", createDefaultSheet());
             }
+
+            // Populate Dropdowns
+            model.addAttribute("availableClasses", classRepository.findAll());
+            model.addAttribute("availableRaces", List.of("Dragonborn", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Halfling", "Human", "Tiefling"));
+            model.addAttribute("availableBackgrounds", List.of("Acolyte", "Charlatan", "Criminal", "Entertainer", "Folk Hero", "Guild Artisan", "Hermit", "Noble", "Outlander", "Sage", "Sailor", "Soldier", "Urchin"));
+            model.addAttribute("availableAlignments", List.of("Lawful Good", "Neutral Good", "Chaotic Good", "Lawful Neutral", "True Neutral", "Chaotic Neutral", "Lawful Evil", "Neutral Evil", "Chaotic Evil"));
         }
         return "character-sheet";
     }
@@ -94,22 +113,45 @@ public class WebController {
         Optional<User> userOpt = userService.findByUsername(username);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-
-            // Security: If updating an existing sheet, verify the user actually owns it
             if (sheet.getId() != null) {
                 Optional<CharacterSheet> existing = characterSheetRepository.findById(sheet.getId());
                 if (existing.isPresent() && !existing.get().getUser().getId().equals(user.getId())) {
-                    return "redirect:/my-characters?username=" + username; // Abort if they don't own it
+                    return "redirect:/my-characters?username=" + username;
                 }
             }
-
             sheet.setUser(user);
             characterSheetRepository.save(sheet);
         }
         return "redirect:/my-characters?username=" + username;
     }
 
-    // Helper method to set defaults so a new sheet isn't filled with zeros
+    @GetMapping("/settings")
+    public String settingsPage(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        return "settings";
+    }
+
+    @PostMapping("/settings/pfp")
+    public String uploadProfilePicture(@RequestParam("username") String username,
+                                       @RequestParam("file") MultipartFile file,
+                                       jakarta.servlet.http.HttpServletRequest request) {
+        Optional<User> userOpt = userService.findByUsername(username);
+        if (userOpt.isPresent() && !file.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                User user = userOpt.get();
+                user.setProfilePicture(base64Image);
+                userService.registerUser(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Smart Redirect: Read where the user came from and send them back there
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/dashboard?username=" + username);
+    }
+
     private CharacterSheet createDefaultSheet() {
         CharacterSheet sheet = new CharacterSheet();
         sheet.setLevel(1);

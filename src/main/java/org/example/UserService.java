@@ -11,9 +11,9 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
 
-        // Seed an initial user if the database is empty
         if (userRepository.count() == 0) {
-            userRepository.save(new User(null, "Lathander", "light@domain.com", "password123"));
+            // Added a second 'null' at the end for the new profilePicture field
+            userRepository.save(new User(null, "Lathander", "light@domain.com", "password123", null));
         }
     }
 
