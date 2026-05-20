@@ -41,6 +41,7 @@
         .spell-desc { line-height: 1.6; color: #ccc; font-size: 15px; white-space: pre-wrap; }
         .higher-levels { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #660000; color: #ffcc99; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="sidebar">
@@ -70,6 +71,7 @@
     <div class="compare-container">
         <div class="spell-column">
             <input type="text" id="search-1" class="search-box" list="spell-list" placeholder="Search for a spell...">
+
             <div id="display-1" class="spell-details">
                 <h2 id="title-1" class="spell-title"></h2>
                 <div id="subtitle-1" class="spell-subtitle"></div>
@@ -81,13 +83,18 @@
                     <div class="stat-item"><label>Duration</label><span id="dur-1"></span></div>
                 </div>
 
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-1"></canvas>
+                </div>
+
                 <div id="desc-1" class="spell-desc"></div>
                 <div id="higher-1" class="spell-desc higher-levels"></div>
             </div>
         </div>
 
-        <div class="spell-column">
+        <div class="`spell-column">
             <input type="text" id="search-2" class="search-box" list="spell-list" placeholder="Compare with...">
+
             <div id="display-2" class="spell-details">
                 <h2 id="title-2" class="spell-title"></h2>
                 <div id="subtitle-2" class="spell-subtitle"></div>
@@ -97,6 +104,10 @@
                     <div class="stat-item"><label>Range</label><span id="range-2"></span></div>
                     <div class="stat-item"><label>Components</label><span id="comp-2"></span></div>
                     <div class="stat-item"><label>Duration</label><span id="dur-2"></span></div>
+                </div>
+
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-2"></canvas>
                 </div>
 
                 <div id="desc-2" class="spell-desc"></div>
@@ -109,19 +120,23 @@
 <script th:inline="javascript">
     const spellsData = /*[[${spells}]]*/ [];
 
+    // Track instances to prevent overlapping charts
+    let chart1Instance = null;
+    let chart2Instance = null;
+
     function renderSpell(inputElementId, displayIdSuffix) {
         const inputVal = document.getElementById(inputElementId).value;
         const displayDiv = document.getElementById('display-' + displayIdSuffix);
-
-        // Find the spell in our fetched MariaDB list
         const spell = spellsData.find(s => s.name.toLowerCase() === inputVal.toLowerCase());
 
         if (spell) {
+            // 1. UNHIDE THE DIV FIRST (Crucial for Chart.js)
             displayDiv.style.display = 'block';
-            document.getElementById('title-' + displayIdSuffix).innerText = spell.name;
 
+            // 2. Populate Text
+            document.getElementById('title-' + displayIdSuffix).innerText = spell.name;
             let levelText = spell.spellLevel === 0 ? "Cantrip" : "Level " + spell.spellLevel;
-            document.getElementById('subtitle-' + displayIdSuffix).innerText = levelText + " " + spell.school + " (Source: " + (spell.source ? spell.source.abbreviation : "Unknown") + ")";
+            document.getElementById('subtitle-' + displayIdSuffix).innerText = levelText + " " + spell.school;
 
             document.getElementById('time-' + displayIdSuffix).innerText = spell.castingTime;
             document.getElementById('range-' + displayIdSuffix).innerText = spell.spellRange;
@@ -142,7 +157,59 @@
             } else {
                 higherDiv.style.display = 'none';
             }
+
+            // 3. Draw the Radar Chart (Now that the div is visible)
+            const ctx = document.getElementById('chart-' + displayIdSuffix).getContext('2d');
+
+            // Destroy the old chart if a user searches a new spell in the same column
+            if (displayIdSuffix === '1' && chart1Instance) chart1Instance.destroy();
+            if (displayIdSuffix === '2' && chart2Instance) chart2Instance.destroy();
+
+            const chartConfig = {
+                type: 'radar',
+                data: {
+                    labels: ['Damage', 'Mitigation', 'Utility', 'Roleplay', 'Healing', 'Unity'],
+                    datasets: [{
+                        label: spell.name,
+                        data: [
+                            spell.scoreDamage,
+                            spell.scoreMitigation,
+                            spell.scoreUtility,
+                            spell.scoreRoleplay,
+                            spell.scoreHealing,
+                            spell.scoreUnity
+                        ],
+                        backgroundColor: 'rgba(204, 0, 0, 0.4)',
+                        borderColor: '#cc0000',
+                        pointBackgroundColor: '#ffcccc',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#cc0000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 6,
+                            ticks: { stepSize: 1, display: false },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#ffcccc', font: { size: 12, weight: 'bold' } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            };
+
+            if (displayIdSuffix === '1') {
+                chart1Instance = new Chart(ctx, chartConfig);
+            } else {
+                chart2Instance = new Chart(ctx, chartConfig);
+            }
+
         } else {
+            // Hide the div if the search is empty or invalid
             displayDiv.style.display = 'none';
         }
     }

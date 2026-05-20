@@ -49,12 +49,30 @@ public class Spell {
     @Column(name = "higher_levels", columnDefinition = "TEXT")
     private String higherLevels;
 
-    // Links the many-to-many relationship using your junction table
+    @Column(name = "score_damage")
+    private int scoreDamage = 1;
+
+    @Column(name = "score_mitigation")
+    private int scoreMitigation = 1;
+
+    @Column(name = "score_utility")
+    private int scoreUtility = 1;
+
+    @Column(name = "score_roleplay")
+    private int scoreRoleplay = 1;
+
+    @Column(name = "score_healing")
+    private int scoreHealing = 1;
+
+    @Column(name = "score_unity")
+    private int scoreUnity = 1;
+
+    // Connects directly to your main DndClass entity
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "spell_classes",
             joinColumns = @JoinColumn(name = "spell_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
+            inverseJoinColumns = @JoinColumn(name = "dnd_class_id")
     )
-    private List<SpellClass> classes;
+    private List<DndClass> classes;
 }

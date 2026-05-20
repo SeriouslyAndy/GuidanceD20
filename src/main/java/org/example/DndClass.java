@@ -32,6 +32,9 @@ public class DndClass {
     @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DndAction> actions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DndClassProgression> progression = new ArrayList<>();
+
     public DndClass(String name, String description, String hitDie, String primaryAbility, String savingThrowProficiencies) {
         this.name = name;
         this.description = description;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -31,10 +32,19 @@ public class DndAction {
     private int scoreHealing = 0;    // Restoring HP
     private int scoreUnity = 0;      // 0 = purely selfish, 10 = highly selfless/party-wide
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dnd_class_id", nullable = false)
     @ToString.Exclude // Prevents infinite recursion crashes
     private DndClass dndClass;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_action_id")
+    @ToString.Exclude
+    private DndAction parentAction;
+
+
 
     public DndAction(String name, String type, int level, String description, DndClass dndClass,
                      int damage, int mitigation, int utility, int roleplay, int healing, int unity) {
