@@ -1,115 +1,726 @@
-package org.example;
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - Spell Helper</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+        /* Consistent Sidebar */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .menu-item.admin a { color: #ffd54a; }
+        .menu-item.admin a:hover { color: #fff7d6; text-shadow: 0 0 5px #ffd54a; }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
 
-import java.util.ArrayList;
-import java.util.List;
+        /* ===== Spellz Wizzard (left archive of every spell) ===== */
+        .archive { width: 260px; flex-shrink: 0; background: linear-gradient(to bottom, #1a0606, #0d0303); border-right: 1px solid #330000; box-shadow: inset -4px 0 10px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; }
+        .archive-head { padding: 18px 18px 12px 18px; border-bottom: 1px solid #330000; }
+        .archive-head h3 { margin: 0; color: #ffcccc; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; }
+        .archive-head p { margin: 4px 0 0 0; color: #888; font-size: 11px; font-style: italic; line-height: 1.4; }
+        .archive-list { flex-grow: 1; overflow-y: auto; padding: 10px; }
+        .archive-foot { padding: 10px 18px; border-top: 1px solid #330000; color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; text-align: center; }
+        .archive-foot strong { color: #66ff8a; }
 
-@Controller
-public class AdminController {
+        .archive-item { position: relative; background: rgba(30, 30, 30, 0.5); border: 1px solid #4d0000; border-left: 3px solid #4d0000; border-radius: 6px; padding: 9px 28px 9px 12px; margin-bottom: 6px; cursor: pointer; transition: 0.15s; }
+        .archive-item:hover { background: rgba(50, 20, 20, 0.7); border-left-color: #cc0000; }
+        .archive-item.selected { background: rgba(20, 50, 25, 0.5); border-color: #5eff8a; border-left-color: #5eff8a; box-shadow: 0 0 8px rgba(94, 255, 138, 0.18); }
+        .archive-item.selected:hover { background: rgba(30, 70, 35, 0.6); }
+        .archive-item.conflict { border-color: #ffaa33; box-shadow: 0 0 10px rgba(255, 170, 51, 0.25); }
+        .archive-item.conflict.selected { border-left-color: #5eff8a; }
+        .archive-item-name { color: #ffcccc; font-weight: bold; font-size: 13px; line-height: 1.2; }
+        .archive-item.selected .archive-item-name { color: #d4ffd9; text-shadow: 0 0 4px rgba(94, 255, 138, 0.4); }
+        .archive-item-sub { color: #888; font-size: 10px; font-style: italic; margin-top: 2px; }
 
-    private final UserService userService;
-    private final SpellRepository spellRepository;
+        /* Warning chevron in the corner of a conflicting selected item. */
+        .archive-warn { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.5); border: 1px solid #ffaa33; color: #ffcc66; width: 22px; height: 22px; border-radius: 50%; font-size: 12px; line-height: 1; cursor: pointer; padding: 0; transition: 0.15s; display: flex; align-items: center; justify-content: center; }
+        .archive-warn:hover { background: #ffaa33; color: #1a0606; box-shadow: 0 0 10px rgba(255, 170, 51, 0.6); transform: scale(1.1); }
 
-    public AdminController(UserService userService, SpellRepository spellRepository) {
-        this.userService = userService;
-        this.spellRepository = spellRepository;
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
+
+        .header-title { color: #ffcccc; border-bottom: 2px solid #cc0000; padding-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: 0; margin-bottom: 30px; }
+
+        .compare-container { display: flex; gap: 30px; width: 100%; max-width: 1200px; margin: 0 auto; }
+        .spell-column { flex: 1; background: rgba(30, 30, 30, 0.9); padding: 30px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); border: 1px solid #660000; border-top: 5px solid #cc0000; display: flex; flex-direction: column; }
+
+        .search-box { width: 100%; padding: 12px; border: 1px solid #4d0000; border-radius: 5px; font-size: 16px; background: rgba(0,0,0,0.5); color: white; margin-bottom: 20px; box-sizing: border-box; }
+        .search-box:focus { outline: none; border-color: #cc0000; }
+
+        .spell-details { display: none; } /* Hidden until a spell is selected */
+        .spell-title { color: #ffcccc; text-transform: uppercase; margin-top: 0; margin-bottom: 5px; font-size: 24px; }
+        .spell-subtitle { color: #999; font-style: italic; margin-bottom: 20px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 5px; border: 1px solid #4d0000; }
+        .stat-item label { display: block; color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+        .stat-item span { color: #fff; font-size: 14px; }
+
+        /* Damage banner - only shown when the spell has a damage value */
+        .damage-banner { display: none; align-items: center; gap: 12px; margin-bottom: 20px; padding: 12px 16px; background: linear-gradient(to right, rgba(204,68,0,0.18), rgba(204,0,0,0.10)); border: 1px solid #cc4400; border-left: 4px solid #ff6622; border-radius: 5px; }
+        .damage-banner .label { color: #ffaa66; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        .damage-banner .value { color: #ffdd99; font-size: 18px; font-weight: bold; font-family: Georgia, serif; }
+
+        .spell-desc { line-height: 1.6; color: #ccc; font-size: 15px; white-space: pre-wrap; }
+        .higher-levels { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #660000; color: #ffcc99; }
+
+        /* ===== Tag chips (T half of NAT_2_0) ===== */
+        .tag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 20px 0; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid #4d0000; border-radius: 5px; min-height: 40px; }
+        .tag-chip { display: inline-block; padding: 4px 10px; background: linear-gradient(to bottom, #660000, #330000); border: 1px solid #cc0000; border-radius: 12px; font-size: 11px; color: #ffcccc; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
+        .tag-empty { color: #777; font-style: italic; font-size: 12px; padding: 4px 0; }
+        .tag-label { width: 100%; color: #ff9999; font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; }
+
+        /* ===== NAT_2_0 score panel ===== */
+        .nat20-panel { display: none; max-width: 1200px; margin: 30px auto 0 auto; background: linear-gradient(135deg, rgba(40,0,0,0.95), rgba(20,0,0,0.95)); border: 2px solid #cc0000; border-radius: 12px; padding: 30px; box-shadow: 0 10px 40px rgba(204,0,0,0.3); position: relative; overflow: hidden; }
+        .nat20-panel::before { content: ""; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(204,0,0,0.15) 0%, transparent 70%); pointer-events: none; }
+        .nat20-header { text-align: center; color: #ffcccc; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .nat20-total { text-align: center; font-size: 84px; font-weight: 900; line-height: 1; margin-bottom: 5px; text-shadow: 0 0 30px currentColor; font-family: Georgia, "Times New Roman", serif; }
+        .nat20-out-of { text-align: center; color: #999; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; }
+        .nat20-verdict { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 25px; padding: 10px; border-radius: 5px; }
+
+        .nat20-grade-bad    { color: #ff4444; }
+        .nat20-grade-mid    { color: #ffaa33; }
+        .nat20-grade-good   { color: #66ff66; }
+        .nat20-verdict.bad  { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; color: #ffaaaa; }
+        .nat20-verdict.mid  { background: rgba(255,170,51,0.1); border: 1px solid #ffaa33; color: #ffddaa; }
+        .nat20-verdict.good { background: rgba(102,255,102,0.1); border: 1px solid #66ff66; color: #aaffaa; }
+
+        .nat20-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .nat20-half { background: rgba(0,0,0,0.4); padding: 18px; border-radius: 8px; border: 1px solid #4d0000; }
+        .nat20-half-label { color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; }
+        .nat20-half-score { color: #ffcccc; font-size: 28px; font-weight: bold; margin-bottom: 10px; font-family: Georgia, serif; }
+        .nat20-half-score small { color: #777; font-size: 14px; font-weight: normal; }
+        .nat20-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .nat20-bar-fill { height: 100%; background: linear-gradient(to right, #660000, #cc0000, #ff6666); border-radius: 4px; transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .nat20-half-detail { color: #999; font-size: 12px; line-height: 1.4; }
+
+        /* ===== Overlap hexagon ===== */
+        .nat20-overlap-viz { display: flex; flex-direction: column; align-items: center; margin: 0 0 28px 0; position: relative; }
+        .nat20-overlap-viz svg { width: 100%; max-width: 320px; height: auto; }
+        .hex-grid-ring { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 1; }
+        .hex-axis-line { stroke: rgba(255,255,255,0.12); stroke-width: 1; }
+        .hex-axis-label { fill: #ff9999; font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .hex-shape-different { fill: rgba(80, 220, 100, 0.32); stroke: #5eff8a; stroke-width: 1.8; stroke-linejoin: round; }
+        .hex-shape-overlap   { fill: rgba(255, 60, 60, 0.78);  stroke: #ff3333; stroke-width: 1.8; stroke-linejoin: round; }
+        .nat20-overlap-pct { display: flex; align-items: baseline; gap: 10px; margin-top: 14px; padding: 10px 24px; background: rgba(0,0,0,0.4); border: 1px solid #4d0000; border-radius: 999px; }
+        .nat20-overlap-pct-label { color: #ff9999; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        .nat20-overlap-pct-value { color: #ffcccc; font-size: 22px; font-weight: 900; font-family: Georgia, serif; }
+        .nat20-legend { display: flex; gap: 22px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+        .nat20-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #ccc; }
+        .legend-swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); }
+        .swatch-different { background: rgba(80, 220, 100, 0.6); border-color: #5eff8a; }
+        .swatch-overlap   { background: rgba(255, 60, 60, 0.85); border-color: #ff3333; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+             th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
+             class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item admin" th:if="${currentUser != null and currentUser.isAdmin}"><a th:href="@{/admin(username=${username})}">&#9670; Admin Panel</a></div>
+    <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<!-- ===== Spellz Wizzard: every spell in the database, click to select ===== -->
+<aside class="archive" aria-label="Spellz Wizzard archive">
+    <div class="archive-head">
+        <h3>Spellz Wizzard</h3>
+        <p>Click a spell to select it. Selected spells that overlap get a &#9888; - click the chevron to compare the pair.</p>
+    </div>
+    <div class="archive-list" id="archive-list"></div>
+    <div class="archive-foot"><strong id="archive-count">0</strong> selected</div>
+</aside>
+
+<div class="main-content">
+    <h1 class="header-title">Spell Helper Archive</h1>
+
+    <datalist id="spell-list">
+        <option th:each="spell : ${spells}" th:value="${spell.name}"></option>
+    </datalist>
+
+    <div class="compare-container">
+        <div class="spell-column">
+            <input type="text" id="search-1" class="search-box" list="spell-list" placeholder="Search for a spell...">
+
+            <div id="display-1" class="spell-details">
+                <h2 id="title-1" class="spell-title"></h2>
+                <div id="subtitle-1" class="spell-subtitle"></div>
+
+                <div class="stat-grid">
+                    <div class="stat-item"><label>Casting Time</label><span id="time-1"></span></div>
+                    <div class="stat-item"><label>Range</label><span id="range-1"></span></div>
+                    <div class="stat-item"><label>Components</label><span id="comp-1"></span></div>
+                    <div class="stat-item"><label>Duration</label><span id="dur-1"></span></div>
+                </div>
+
+                <div class="damage-banner" id="damage-1">
+                    <span class="label">Damage</span>
+                    <span class="value" id="damage-value-1"></span>
+                </div>
+
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-1"></canvas>
+                </div>
+
+                <div class="tag-chips" id="tags-1">
+                    <div class="tag-label">Tags</div>
+                </div>
+
+                <div id="desc-1" class="spell-desc"></div>
+                <div id="higher-1" class="spell-desc higher-levels"></div>
+            </div>
+        </div>
+
+        <div class="spell-column">
+            <input type="text" id="search-2" class="search-box" list="spell-list" placeholder="Compare with...">
+
+            <div id="display-2" class="spell-details">
+                <h2 id="title-2" class="spell-title"></h2>
+                <div id="subtitle-2" class="spell-subtitle"></div>
+
+                <div class="stat-grid">
+                    <div class="stat-item"><label>Casting Time</label><span id="time-2"></span></div>
+                    <div class="stat-item"><label>Range</label><span id="range-2"></span></div>
+                    <div class="stat-item"><label>Components</label><span id="comp-2"></span></div>
+                    <div class="stat-item"><label>Duration</label><span id="dur-2"></span></div>
+                </div>
+
+                <div class="damage-banner" id="damage-2">
+                    <span class="label">Damage</span>
+                    <span class="value" id="damage-value-2"></span>
+                </div>
+
+                <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
+                    <canvas id="chart-2"></canvas>
+                </div>
+
+                <div class="tag-chips" id="tags-2">
+                    <div class="tag-label">Tags</div>
+                </div>
+
+                <div id="desc-2" class="spell-desc"></div>
+                <div id="higher-2" class="spell-desc higher-levels"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAT_2_0 score panel - revealed when both spells are picked ===== -->
+    <div id="nat20-panel" class="nat20-panel">
+        <div class="nat20-header">&#9670; NAT 20 COMPATIBILITY &#9670;</div>
+        <div id="nat20-total" class="nat20-total nat20-grade-mid">0.0</div>
+        <div class="nat20-out-of">OUT OF 20</div>
+        <div id="nat20-verdict" class="nat20-verdict mid">Pick two spells to compare</div>
+
+        <!-- ===== Overlap hexagon: both spells drawn on top of each other ===== -->
+        <div class="nat20-overlap-viz">
+            <svg id="nat20-svg" viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg" aria-label="Hexagon overlap visualization">
+                <g id="nat20-grid"></g>
+                <g id="nat20-shapes"></g>
+                <g id="nat20-labels"></g>
+            </svg>
+            <div class="nat20-overlap-pct">
+                <span class="nat20-overlap-pct-label">Overlap</span>
+                <span class="nat20-overlap-pct-value" id="overlap-pct">&mdash;</span>
+            </div>
+            <div class="nat20-legend">
+                <div class="nat20-legend-item"><span class="legend-swatch swatch-different"></span>Different (unique to each spell)</div>
+                <div class="nat20-legend-item"><span class="legend-swatch swatch-overlap"></span>Overlap (both spells cover this)</div>
+            </div>
+        </div>
+
+        <div class="nat20-breakdown">
+            <div class="nat20-half">
+                <div class="nat20-half-label">Main Tags &middot; Hexagon Area</div>
+                <div class="nat20-half-score"><span id="mt-score">0.0</span><small> / 10</small></div>
+                <div class="nat20-bar"><div id="mt-bar" class="nat20-bar-fill" style="width:0%"></div></div>
+                <div class="nat20-half-detail" id="mt-detail">Geometric overlap of the two radar shapes. Less overlap = higher score.</div>
+            </div>
+            <div class="nat20-half">
+                <div class="nat20-half-label">Tags &middot; Jaccard Diversity</div>
+                <div class="nat20-half-score"><span id="t-score">0.0</span><small> / 10</small></div>
+                <div class="nat20-bar"><div id="t-bar" class="nat20-bar-fill" style="width:0%"></div></div>
+                <div class="nat20-half-detail" id="t-detail">Different flavour tags between the two spells. More variety = higher score.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const spellsData = /*[[${spells}]]*/ [];
+
+    // Track instances to prevent overlapping charts
+    let chart1Instance = null;
+    let chart2Instance = null;
+
+    // Track which spell is currently selected in each column (by id).
+    // Both must be set for the NAT 20 panel to appear.
+    const selectedIds = { 1: null, 2: null };
+
+    // Spellz Wizzard - the set of spell IDs the user has selected from
+    // the archive. Multi-select, no order. Lives only in memory.
+    const selectedSpells = new Set();
+
+    // Conflict threshold: total NAT_2_0 < this value means the two spells
+    // overlap enough that the player should reconsider taking both.
+    // 10/20 puts the cut right at the half-way mark, which is where
+    // pairs like Fire Bolt (~9.3 vs Fireball) start feeling redundant.
+    const CONFLICT_THRESHOLD = 10.0;
+
+    // ============================================================
+    // NAT_2_0 scoring - mirror of SpellzCompare.java for fast,
+    // synchronous pairwise checks across the whole archive.
+    // Any change here must be mirrored on the server side.
+    // ============================================================
+    const SECTOR_K_JS = Math.sqrt(3) / 4.0;
+
+    function hexValues(s) {
+        return [s.scoreDamage, s.scoreMitigation, s.scoreUtility,
+                s.scoreRoleplay, s.scoreHealing, s.scoreUnity];
     }
 
-    private boolean guard(String username) {
-        return userService.isAdmin(username);
+    function normalisedTagSet(s) {
+        const set = new Set();
+        (s.tags || []).forEach(t => {
+            if (!t) return;
+            const v = t.trim().toLowerCase();
+            if (v) set.add(v);
+        });
+        return set;
     }
 
-    @GetMapping("/admin")
-    public String adminPage(@RequestParam("username") String username, Model model) {
-        if (!guard(username)) {
-            return "redirect:/dashboard?username=" + username;
+    function nat20Total(a, b) {
+        // Main Tags - hexagon IoU
+        const va = hexValues(a), vb = hexValues(b);
+        let areaA = 0, areaB = 0, overlap = 0;
+        for (let i = 0; i < 6; i++) {
+            const j = (i + 1) % 6;
+            areaA   += va[i] * va[j];
+            areaB   += vb[i] * vb[j];
+            overlap += Math.min(va[i], vb[i]) * Math.min(va[j], vb[j]);
         }
-        
-        // FIX: Add currentUser so the sidebar renders the admin link and profile picture properly
-        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
-        model.addAttribute("username", username);
-        model.addAttribute("spells", spellRepository.findAll());
-        model.addAttribute("users", userService.findAll());
-        
-        return "admin";
+        areaA *= SECTOR_K_JS; areaB *= SECTOR_K_JS; overlap *= SECTOR_K_JS;
+        const union = areaA + areaB - overlap;
+        const mt = union > 0 ? 10 * (1 - overlap / union) : 0;
+
+        // Tags - Jaccard
+        const setA = normalisedTagSet(a), setB = normalisedTagSet(b);
+        let t;
+        if (setA.size === 0 || setB.size === 0) {
+            t = 5; // neutral - matches Java side
+        } else {
+            let inter = 0;
+            setA.forEach(x => { if (setB.has(x)) inter++; });
+            const u = setA.size + setB.size - inter;
+            t = 10 * (1 - inter / u);
+        }
+        return mt + t;
     }
 
-    // ---- Spell tag CRUD ----------------------------------------------------
+    // ============================================================
+    // Spellz Wizzard - selection + conflict detection + jump compare
+    // ============================================================
 
-    @PostMapping("/admin/spells/{id}/tags/add")
-    public String addTag(@PathVariable("id") Integer spellId,
-                         @RequestParam("username") String username,
-                         @RequestParam("tag") String tag) {
-        if (!guard(username)) {
-            return "redirect:/dashboard?username=" + username;
+    function toggleSpellSelection(spellId) {
+        if (selectedSpells.has(spellId)) {
+            selectedSpells.delete(spellId);
+        } else {
+            selectedSpells.add(spellId);
         }
-        String normalised = tag == null ? "" : tag.trim().toLowerCase();
-        if (!normalised.isEmpty()) {
-            spellRepository.findById(spellId).ifPresent(spell -> {
-                // FIX: Wrap in a mutable ArrayList to prevent UnsupportedOperationException
-                List<String> tags = spell.getTags() == null ? new ArrayList<>() : new ArrayList<>(spell.getTags());
-                
-                if (!tags.contains(normalised)) {
-                    tags.add(normalised);
-                    spell.setTags(tags);
-                    spellRepository.save(spell);
-                }
-            });
-        }
-        return "redirect:/admin?username=" + username + "#spell-" + spellId;
+        renderArchive();
     }
 
-    @PostMapping("/admin/spells/{id}/tags/remove")
-    public String removeTag(@PathVariable("id") Integer spellId,
-                            @RequestParam("username") String username,
-                            @RequestParam("tag") String tag) {
-        if (!guard(username)) {
-            return "redirect:/dashboard?username=" + username;
-        }
-        spellRepository.findById(spellId).ifPresent(spell -> {
-            if (spell.getTags() != null) {
-                // FIX: Wrap in a mutable ArrayList
-                List<String> tags = new ArrayList<>(spell.getTags());
-                if (tags.remove(tag)) {
-                    spell.setTags(tags);
-                    spellRepository.save(spell);
+    /**
+     * Among the currently-selected spells, return the OTHER selected
+     * spell that conflicts most strongly with `spellId` (lowest NAT_2_0
+     * total below the threshold), or null if there isn't one.
+     */
+    function findWorstConflict(spellId) {
+        if (!selectedSpells.has(spellId)) return null;
+        const me = spellsData.find(s => s.id === spellId);
+        if (!me) return null;
+
+        let worst = null;
+        selectedSpells.forEach(otherId => {
+            if (otherId === spellId) return;
+            const other = spellsData.find(s => s.id === otherId);
+            if (!other) return;
+            const score = nat20Total(me, other);
+            if (score < CONFLICT_THRESHOLD) {
+                if (worst === null || score < worst.score) {
+                    worst = { id: otherId, name: other.name, score };
                 }
             }
         });
-        return "redirect:/admin?username=" + username + "#spell-" + spellId;
+        return worst;
     }
 
-    // ---- User role management ---------------------------------------------
-
-    @PostMapping("/admin/users/{id}/promote")
-    public String promote(@PathVariable("id") Long userId,
-                          @RequestParam("username") String username) {
-        if (!guard(username)) {
-            return "redirect:/dashboard?username=" + username;
-        }
-        userService.promote(userId);
-        return "redirect:/admin?username=" + username + "#users";
+    /**
+     * Fill the two compare columns with this spell pair, fire renderSpell
+     * on both so the charts / NAT 20 panel update, then scroll the panel
+     * into view so the user can see the full breakdown.
+     */
+    function jumpCompare(idA, idB) {
+        const a = spellsData.find(s => s.id === idA);
+        const b = spellsData.find(s => s.id === idB);
+        if (!a || !b) return;
+        document.getElementById('search-1').value = a.name;
+        document.getElementById('search-2').value = b.name;
+        renderSpell('search-1', '1');
+        renderSpell('search-2', '2');
+        const panel = document.getElementById('nat20-panel');
+        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    @PostMapping("/admin/users/{id}/demote")
-    public String demote(@PathVariable("id") Long userId,
-                         @RequestParam("username") String username) {
-        if (!guard(username)) {
-            return "redirect:/dashboard?username=" + username;
-        }
-        // Don't allow demoting yourself - keeps you from locking yourself out.
-        boolean isSelf = userService.findByUsername(username)
-                .map(self -> userId.equals(self.getId()))
-                .orElse(false);
-        if (!isSelf) {
-            userService.demote(userId);
-        }
-        return "redirect:/admin?username=" + username + "#users";
+    function renderArchive() {
+        const list = document.getElementById('archive-list');
+        const count = document.getElementById('archive-count');
+        // Sort by spell level then alphabetically so the archive reads cleanly.
+        const sorted = spellsData.slice().sort((a, b) => {
+            if (a.spellLevel !== b.spellLevel) return a.spellLevel - b.spellLevel;
+            return a.name.localeCompare(b.name);
+        });
+
+        list.innerHTML = sorted.map(spell => {
+            const isSelected = selectedSpells.has(spell.id);
+            const conflict = isSelected ? findWorstConflict(spell.id) : null;
+            const classes = ['archive-item'];
+            if (isSelected) classes.push('selected');
+            if (conflict)   classes.push('conflict');
+
+            const levelTxt = spell.spellLevel === 0
+                ? 'Cantrip \u00b7 ' + spell.school
+                : 'Level ' + spell.spellLevel + ' \u00b7 ' + spell.school;
+
+            const warn = conflict
+                ? '<button class="archive-warn"'
+                  + ' title="Low score - click to compare with ' + escapeAttr(conflict.name) + '"'
+                  + ' onclick="event.stopPropagation(); jumpCompare(' + spell.id + ',' + conflict.id + ')">'
+                  + '&#9888;</button>'
+                : '';
+
+            return '<div class="' + classes.join(' ') + '" onclick="toggleSpellSelection(' + spell.id + ')">'
+                +    warn
+                +    '<div class="archive-item-name">' + escapeHtml(spell.name) + '</div>'
+                +    '<div class="archive-item-sub">'  + escapeHtml(levelTxt)  + '</div>'
+                +  '</div>';
+        }).join('');
+
+        count.textContent = selectedSpells.size;
     }
-}
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+    function escapeAttr(s) {
+        // For use inside double-quoted HTML attributes.
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
+    // ---- Hexagon overlap SVG ------------------------------------------------
+    // Axes go clockwise starting at the top, matching the radar chart in
+    // each spell column: Damage, Mitigation, Utility, Roleplay, Healing,
+    // Unity. Stat values run 0..10 and map to a 120px radius.
+    const HEX_LABELS = ['Damage', 'Mitigation', 'Utility', 'Roleplay', 'Healing', 'Unity'];
+    const HEX_R      = 120;   // radius for stat value 10
+    const HEX_MAX    = 10;
+    const LABEL_PAD  = 18;    // extra radius for label placement
+
+    function hexAxis(i) {
+        // -90deg puts axis 0 at the top in SVG coordinates (y-down).
+        const rad = (-90 + i * 60) * Math.PI / 180;
+        return { dx: Math.cos(rad), dy: Math.sin(rad) };
+    }
+
+    function hexPoints(values) {
+        return values.map((v, i) => {
+            const a = hexAxis(i);
+            const r = (HEX_R / HEX_MAX) * v;
+            return (a.dx * r).toFixed(2) + ',' + (a.dy * r).toFixed(2);
+        }).join(' ');
+    }
+
+    function buildHexGrid() {
+        // Concentric rings at 2/4/6/8/10 plus 6 axis lines.
+        let svg = '';
+        for (let step = 2; step <= HEX_MAX; step += 2) {
+            const ringPts = [];
+            for (let i = 0; i < 6; i++) {
+                const a = hexAxis(i);
+                const r = (HEX_R / HEX_MAX) * step;
+                ringPts.push((a.dx * r).toFixed(2) + ',' + (a.dy * r).toFixed(2));
+            }
+            svg += '<polygon class="hex-grid-ring" points="' + ringPts.join(' ') + '" />';
+        }
+        for (let i = 0; i < 6; i++) {
+            const a = hexAxis(i);
+            svg += '<line class="hex-axis-line" x1="0" y1="0" x2="'
+                + (a.dx * HEX_R).toFixed(2) + '" y2="' + (a.dy * HEX_R).toFixed(2) + '" />';
+        }
+        return svg;
+    }
+
+    function buildHexLabels() {
+        let svg = '';
+        for (let i = 0; i < 6; i++) {
+            const a = hexAxis(i);
+            const x = a.dx * (HEX_R + LABEL_PAD);
+            const y = a.dy * (HEX_R + LABEL_PAD);
+            // Tweak anchor by quadrant so labels read nicely outside the hexagon.
+            let anchor = 'middle';
+            if (a.dx >  0.3) anchor = 'start';
+            else if (a.dx < -0.3) anchor = 'end';
+            const dy = a.dy > 0.5 ? 12 : (a.dy < -0.5 ? -4 : 4);
+            svg += '<text class="hex-axis-label" x="' + x.toFixed(1)
+                + '" y="' + (y + dy).toFixed(1) + '" text-anchor="' + anchor + '">'
+                + HEX_LABELS[i] + '</text>';
+        }
+        return svg;
+    }
+
+    function renderOverlapHexagon(spellA, spellB) {
+        const a = [spellA.scoreDamage, spellA.scoreMitigation, spellA.scoreUtility,
+                   spellA.scoreRoleplay, spellA.scoreHealing, spellA.scoreUnity];
+        const b = [spellB.scoreDamage, spellB.scoreMitigation, spellB.scoreUtility,
+                   spellB.scoreRoleplay, spellB.scoreHealing, spellB.scoreUnity];
+        const inter = a.map((v, i) => Math.min(v, b[i]));
+
+        document.getElementById('nat20-grid').innerHTML = buildHexGrid();
+        document.getElementById('nat20-labels').innerHTML = buildHexLabels();
+
+        // Each spell as a green polygon. Where they overlap, two green
+        // layers sit on top of each other - we then paint the geometric
+        // intersection in red on top so that area reads as "overlap".
+        document.getElementById('nat20-shapes').innerHTML =
+              '<polygon class="hex-shape-different" points="' + hexPoints(a) + '" />'
+            + '<polygon class="hex-shape-different" points="' + hexPoints(b) + '" />'
+            + '<polygon class="hex-shape-overlap"   points="' + hexPoints(inter) + '" />';
+    }
+
+    function renderTags(suffix, spell) {
+        const container = document.getElementById('tags-' + suffix);
+        // Clear everything except the static "Tags" label
+        container.innerHTML = '<div class="tag-label">Tags</div>';
+
+        const tags = (spell.tags || []).filter(t => t && t.trim().length);
+        if (tags.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'tag-empty';
+            empty.innerText = 'No tags yet - ask an admin to add some.';
+            container.appendChild(empty);
+            return;
+        }
+        tags.forEach(t => {
+            const chip = document.createElement('span');
+            chip.className = 'tag-chip';
+            chip.innerText = t;
+            container.appendChild(chip);
+        });
+    }
+
+    function gradeClass(total) {
+        if (total < 7)  return { score: 'nat20-grade-bad',  verdict: 'bad',  text: 'Heavy overlap - these spells fill the same role. Consider swapping one out.' };
+        if (total < 13) return { score: 'nat20-grade-mid',  verdict: 'mid',  text: 'Moderate overlap - some redundancy, but defensible.' };
+        if (total < 17) return { score: 'nat20-grade-good', verdict: 'good', text: 'Strong pairing - the two spells complement each other well.' };
+        return            { score: 'nat20-grade-good', verdict: 'good', text: 'NAT 20! These spells barely overlap at all - excellent variety.' };
+    }
+
+    function updateNat20Panel() {
+        const panel = document.getElementById('nat20-panel');
+        const idA = selectedIds[1];
+        const idB = selectedIds[2];
+
+        if (!idA || !idB) {
+            panel.style.display = 'none';
+            return;
+        }
+
+        // Look up the full spell objects from the data the server gave us -
+        // we already have everything we need to draw the hexagons locally.
+        const spellA = spellsData.find(s => s.id === idA);
+        const spellB = spellsData.find(s => s.id === idB);
+        if (spellA && spellB) {
+            renderOverlapHexagon(spellA, spellB);
+        }
+
+        // Reveal the panel optimistically, fill it once the score arrives.
+        panel.style.display = 'block';
+
+        fetch('/api/compare-spells?a=' + idA + '&b=' + idB)
+            .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+            .then(result => {
+                const total = result.totalScore;
+                const mt    = result.mainTagScore;
+                const t     = result.tagScore;
+                const grade = gradeClass(total);
+
+                const totalEl = document.getElementById('nat20-total');
+                totalEl.innerText = total.toFixed(1);
+                totalEl.className = 'nat20-total ' + grade.score;
+
+                const verdictEl = document.getElementById('nat20-verdict');
+                verdictEl.innerText = grade.text;
+                verdictEl.className = 'nat20-verdict ' + grade.verdict;
+
+                document.getElementById('mt-score').innerText = mt.toFixed(1);
+                document.getElementById('t-score').innerText  = t.toFixed(1);
+                document.getElementById('mt-bar').style.width = (mt * 10) + '%';
+                document.getElementById('t-bar').style.width  = (t  * 10) + '%';
+
+                document.getElementById('mt-detail').innerText =
+                    'Hexagon overlap: ' + result.overlapArea.toFixed(1) +
+                    ' of ' + result.hexAreaA.toFixed(1) + ' / ' + result.hexAreaB.toFixed(1) + ' unit areas.';
+
+                // Overlap percentage shown under the hexagon viz.
+                // We use Intersection over Union so 0% = totally different,
+                // 100% = identical. Matches what the MT score is built from.
+                const union = result.hexAreaA + result.hexAreaB - result.overlapArea;
+                const overlapPct = union > 0 ? (result.overlapArea / union) * 100 : 0;
+                document.getElementById('overlap-pct').innerText = overlapPct.toFixed(1) + '%';
+            })
+            .catch(err => {
+                console.error('NAT_2_0 fetch failed:', err);
+                document.getElementById('nat20-verdict').innerText =
+                    'Could not load score - check the server.';
+            });
+    }
+
+    function renderSpell(inputElementId, displayIdSuffix) {
+        const inputVal = document.getElementById(inputElementId).value;
+        const displayDiv = document.getElementById('display-' + displayIdSuffix);
+        const spell = spellsData.find(s => s.name.toLowerCase() === inputVal.toLowerCase());
+
+        if (spell) {
+            // Remember the selection so the NAT 20 panel can use it.
+            selectedIds[displayIdSuffix] = spell.id;
+
+            // 1. UNHIDE THE DIV FIRST (Crucial for Chart.js)
+            displayDiv.style.display = 'block';
+
+            // 2. Populate Text
+            document.getElementById('title-' + displayIdSuffix).innerText = spell.name;
+            let levelText = spell.spellLevel === 0 ? "Cantrip" : "Level " + spell.spellLevel;
+            document.getElementById('subtitle-' + displayIdSuffix).innerText = levelText + " " + spell.school;
+
+            document.getElementById('time-' + displayIdSuffix).innerText = spell.castingTime;
+            document.getElementById('range-' + displayIdSuffix).innerText = spell.spellRange;
+            document.getElementById('dur-' + displayIdSuffix).innerText = spell.duration;
+
+            let comps = [];
+            if(spell.compV) comps.push("V");
+            if(spell.compS) comps.push("S");
+            if(spell.compM) comps.push("M (" + (spell.materials || "") + ")");
+            document.getElementById('comp-' + displayIdSuffix).innerText = comps.join(", ");
+
+            // Damage banner: only shown when the spell actually has damage.
+            const damageBanner = document.getElementById('damage-' + displayIdSuffix);
+            if (spell.damage && spell.damage.trim().length > 0) {
+                document.getElementById('damage-value-' + displayIdSuffix).innerText = spell.damage;
+                damageBanner.style.display = 'flex';
+            } else {
+                damageBanner.style.display = 'none';
+            }
+
+            document.getElementById('desc-' + displayIdSuffix).innerText = spell.description;
+
+            const higherDiv = document.getElementById('higher-' + displayIdSuffix);
+            if (spell.higherLevels) {
+                higherDiv.style.display = 'block';
+                higherDiv.innerText = spell.higherLevels;
+            } else {
+                higherDiv.style.display = 'none';
+            }
+
+            // Tags
+            renderTags(displayIdSuffix, spell);
+
+            // 3. Draw the Radar Chart (Now that the div is visible)
+            const ctx = document.getElementById('chart-' + displayIdSuffix).getContext('2d');
+
+            // Destroy the old chart if a user searches a new spell in the same column
+            if (displayIdSuffix === '1' && chart1Instance) chart1Instance.destroy();
+            if (displayIdSuffix === '2' && chart2Instance) chart2Instance.destroy();
+
+            const chartConfig = {
+                type: 'radar',
+                data: {
+                    labels: ['Damage', 'Mitigation', 'Utility', 'Roleplay', 'Healing', 'Unity'],
+                    datasets: [{
+                        label: spell.name,
+                        data: [
+                            spell.scoreDamage,
+                            spell.scoreMitigation,
+                            spell.scoreUtility,
+                            spell.scoreRoleplay,
+                            spell.scoreHealing,
+                            spell.scoreUnity
+                        ],
+                        backgroundColor: 'rgba(204, 0, 0, 0.4)',
+                        borderColor: '#cc0000',
+                        pointBackgroundColor: '#ffcccc',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#cc0000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 10,
+                            ticks: { stepSize: 1, display: false },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#ffcccc', font: { size: 12, weight: 'bold' } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            };
+
+            if (displayIdSuffix === '1') {
+                chart1Instance = new Chart(ctx, chartConfig);
+            } else {
+                chart2Instance = new Chart(ctx, chartConfig);
+            }
+
+        } else {
+            // Hide the div if the search is empty or invalid
+            selectedIds[displayIdSuffix] = null;
+            displayDiv.style.display = 'none';
+        }
+
+        // Re-evaluate the NAT 20 panel any time a selection changes.
+        updateNat20Panel();
+    }
+
+    document.getElementById('search-1').addEventListener('input', () => renderSpell('search-1', '1'));
+    document.getElementById('search-2').addEventListener('input', () => renderSpell('search-2', '2'));
+
+    // Initial render of the Spellz Wizzard - shows every spell up front
+    // so the user can pick from the whole archive immediately.
+    renderArchive();
+</script>
+</body>
+</html>
