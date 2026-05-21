@@ -107,6 +107,12 @@
         <div class="description">
             <p th:text="${dndClass.description}">Class description goes here.</p>
         </div>
+        <div style="margin-bottom: 40px;" th:if="${dndClass.name == 'Sorcerer'}">
+            <a th:href="@{/wiki/class/{name}/spells(name=${dndClass.name}, username=${username})}"
+               style="display: inline-block; background: #cc0000; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 5px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(204,0,0,0.3);">
+                View Sorcerer Spell List
+            </a>
+        </div>
 
         <div class="table-responsive" th:if="${not #lists.isEmpty(progression)}">
             <table class="progression-table">

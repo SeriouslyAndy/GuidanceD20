@@ -1,10 +1,13 @@
 package org.example;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "spells")
@@ -80,14 +83,16 @@ public class Spell {
             joinColumns = @JoinColumn(name = "spell_id")
     )
     @Column(name = "tag")
-    private List<String> tags = new ArrayList<>();
+    private Set<String> tags = new HashSet<>();
 
     // Connects directly to your main DndClass entity
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "spell_classes",
             joinColumns = @JoinColumn(name = "spell_id"),
             inverseJoinColumns = @JoinColumn(name = "dnd_class_id")
     )
-    private List<DndClass> classes;
+    private Set<DndClass> classes = new HashSet<>();
+
 }

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title th:text="|${dndClass.name} Spells - Guidance D20 Wiki|">Class Spells</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; overflow: hidden; }
+
+        /* Shared Sidebar CSS */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover;}
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        /* Master-Detail Layout */
+        .main-content { flex-grow: 1; display: flex; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow: hidden; }
+
+        .list-pane { width: 60%; padding: 40px; overflow-y: auto; border-right: 2px solid #4d0000; }
+        .detail-pane { width: 40%; padding: 40px; background: rgba(20, 20, 20, 0.95); overflow-y: auto; box-shadow: inset 5px 0 15px rgba(0,0,0,0.5); }
+
+        h1 { color: #ffcccc; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-top: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #999; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .back-link:hover { color: #ffcccc; }
+
+        /* Level Filter Buttons */
+        .filter-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .filter-btn { background: rgba(0,0,0,0.5); border: 1px solid #660000; color: #ccc; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; }
+        .filter-btn:hover { background: rgba(204,0,0,0.3); color: white; }
+        .filter-btn.active { background: #cc0000; color: white; border-color: #ff6666; box-shadow: 0 0 10px rgba(204,0,0,0.5); }
+
+        /* Spell Table */
+        .spell-table { width: 100%; border-collapse: collapse; font-size: 14px; background: rgba(0,0,0,0.2); border: 1px solid #4d0000; }
+        .spell-table th, .spell-table td { border-bottom: 1px solid #4d0000; padding: 12px 10px; text-align: left; }
+        .spell-table th { background-color: rgba(204,0,0,0.2); color: #ffcccc; text-transform: uppercase; font-size: 12px; position: sticky; top: 0; }
+        .spell-table tbody tr { cursor: pointer; transition: 0.1s; }
+        .spell-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.02); }
+        .spell-table tbody tr:hover { background-color: rgba(204,0,0,0.2); }
+        .spell-table tbody tr.selected { background-color: rgba(204,0,0,0.4); border-left: 3px solid #ff6666; }
+
+        /* Detail Pane Styling */
+        .empty-state { text-align: center; color: #777; font-style: italic; margin-top: 50px; }
+        #spell-content { display: none; }
+        .spell-title { color: #ffcccc; font-size: 28px; margin: 0 0 5px 0; text-transform: uppercase; }
+        .spell-meta { color: #aaa; font-style: italic; font-size: 14px; border-bottom: 1px dashed #4d0000; padding-bottom: 15px; margin-bottom: 20px; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 8px; border: 1px solid #4d0000; }
+        .stat-item label { display: block; color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+        .stat-item span { color: #fff; font-size: 15px; }
+
+        .spell-desc { line-height: 1.6; color: #ddd; font-size: 15px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="profile-section">
+        <div class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+
+    <div class="list-pane">
+        <a th:href="@{/wiki/class/{name}(name=${dndClass.name}, username=${username})}" class="back-link">← Back to Class Details</a>
+        <h1 th:text="${dndClass.name} + ' Spell List'">Sorcerer Spell List</h1>
+
+        <div class="filter-nav" id="filter-nav">
+            <button class="filter-btn active" onclick="filterSpells('ALL', this)">All Spells</button>
+            <button class="filter-btn" onclick="filterSpells(0, this)">Cantrips</button>
+            <button class="filter-btn" onclick="filterSpells(1, this)">1st Level</button>
+            <button class="filter-btn" onclick="filterSpells(2, this)">2nd Level</button>
+            <button class="filter-btn" onclick="filterSpells(3, this)">3rd Level</button>
+            <button class="filter-btn" onclick="filterSpells(4, this)">4th Level</button>
+            <button class="filter-btn" onclick="filterSpells(5, this)">5th Level</button>
+            <button class="filter-btn" onclick="filterSpells(6, this)">6th Level</button>
+            <button class="filter-btn" onclick="filterSpells(7, this)">7th Level</button>
+            <button class="filter-btn" onclick="filterSpells(8, this)">8th Level</button>
+            <button class="filter-btn" onclick="filterSpells(9, this)">9th Level</button>
+        </div>
+
+        <table class="spell-table">
+            <thead>
+            <tr>
+                <th>Spell Name</th>
+                <th>Level</th>
+                <th>School</th>
+                <th>Casting Time</th>
+            </tr>
+            </thead>
+            <tbody id="spell-tbody">
+            <tr th:each="spell : ${spells}" th:data-level="${spell.spellLevel}" th:onclick="'showSpell(' + ${spell.id} + ', this)'">
+                <td style="font-weight: bold; color: #ffcccc;" th:text="${spell.name}">Fireball</td>
+                <td th:text="${spell.spellLevel == 0 ? 'Cantrip' : spell.spellLevel}">3</td>
+                <td th:text="${spell.school}">Evocation</td>
+                <td th:text="${spell.castingTime}">1 Action</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="detail-pane">
+        <div id="empty-state" class="empty-state">
+            Select a spell from the list to view its details.
+        </div>
+
+        <div id="spell-content">
+            <h2 id="s-title" class="spell-title">Spell Name</h2>
+            <div id="s-meta" class="spell-meta">Level X School</div>
+
+            <div class="stat-grid">
+                <div class="stat-item"><label>Casting Time</label><span id="s-time"></span></div>
+                <div class="stat-item"><label>Range</label><span id="s-range"></span></div>
+                <div class="stat-item"><label>Components</label><span id="s-comp"></span></div>
+                <div class="stat-item"><label>Duration</label><span id="s-dur"></span></div>
+            </div>
+
+            <div id="s-desc" class="spell-desc"></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // Serialize the spells so JavaScript can access them instantly
+    const classSpells = /*[[${spells}]]*/ [];
+
+    // Table Filtering Logic
+    function filterSpells(level, btnElement) {
+        // Update active button styling
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        // Filter table rows
+        const rows = document.querySelectorAll('#spell-tbody tr');
+        rows.forEach(row => {
+            const rowLevel = row.getAttribute('data-level');
+            if (level === 'ALL' || parseInt(rowLevel) === level) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Detail Pane Population Logic
+    function showSpell(spellId, rowElement) {
+        // Highlight the selected row
+        document.querySelectorAll('#spell-tbody tr').forEach(row => row.classList.remove('selected'));
+        rowElement.classList.add('selected');
+
+        // Find the spell data
+        const spell = classSpells.find(s => s.id === spellId);
+
+        if (spell) {
+            // Hide empty state, show content
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('spell-content').style.display = 'block';
+
+            // Populate text
+            document.getElementById('s-title').innerText = spell.name;
+            const lvlText = spell.spellLevel === 0 ? "Cantrip" : "Level " + spell.spellLevel;
+            document.getElementById('s-meta').innerText = lvlText + " " + spell.school;
+
+            document.getElementById('s-time').innerText = spell.castingTime;
+            document.getElementById('s-range').innerText = spell.spellRange;
+            document.getElementById('s-dur').innerText = spell.duration;
+
+            let comps = [];
+            if(spell.compV) comps.push("V");
+            if(spell.compS) comps.push("S");
+            if(spell.compM) comps.push("M (" + (spell.materials || "") + ")");
+            document.getElementById('s-comp').innerText = comps.join(", ");
+
+            document.getElementById('s-desc').innerText = spell.description;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package org.example;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,13 +26,16 @@ public class DndClass {
     private String primaryAbility;
     private String savingThrowProficiencies;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DndSubclass> subclasses = new ArrayList<>();
 
     // NEW: Link to the Actions/Spells table
+    @JsonIgnore
     @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DndAction> actions = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "dndClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DndClassProgression> progression = new ArrayList<>();
 

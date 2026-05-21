@@ -55,7 +55,7 @@ public class AdminController {
         if (!normalised.isEmpty()) {
             spellRepository.findById(spellId).ifPresent(spell -> {
                 if (spell.getTags() == null) {
-                    spell.setTags(new java.util.ArrayList<>());
+                    spell.setTags(new java.util.HashSet<>());
                 }
                 if (!spell.getTags().contains(normalised)) {
                     spell.getTags().add(normalised);

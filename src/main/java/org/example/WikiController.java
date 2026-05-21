@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 public class WikiController {
 
     private final DndClassRepository classRepository;
+    private final SpellRepository spellRepository;
 
-    public WikiController(DndClassRepository classRepository) {
+    public WikiController(DndClassRepository classRepository, SpellRepository spellRepository) {
         this.classRepository = classRepository;
+        this.spellRepository = spellRepository;
     }
 
     @GetMapping("/wiki")
@@ -50,6 +52,26 @@ public class WikiController {
             model.addAttribute("features", sortedFeatures);
 
             return "wiki-class";
+        } else {
+            return "redirect:/wiki?username=" + username;
+        }
+    }
+
+    @GetMapping("/wiki/class/{className}/spells")
+    public String getClassSpells(@PathVariable String className, @RequestParam(value = "username", required = false, defaultValue = "Adventurer") String username, Model model) {
+        model.addAttribute("username", username);
+        Optional<DndClass> dndClassOpt = classRepository.findByNameIgnoreCase(className);
+
+        if (dndClassOpt.isPresent()) {
+            DndClass dndClass = dndClassOpt.get();
+
+            // Filter all spells to only include ones belonging to this specific class
+            List<Spell> classSpells = spellRepository.findByClassesContaining(dndClass);
+
+            model.addAttribute("dndClass", dndClass);
+            model.addAttribute("spells", classSpells);
+
+            return "class-spells";
         } else {
             return "redirect:/wiki?username=" + username;
         }
