@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - New Topic</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+        /* Keep sidebar CSS same as community.html */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; }
+
+        .form-container { background: rgba(30, 30, 30, 0.9); padding: 40px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); max-width: 800px; width: 100%; border: 1px solid #660000; border-top: 5px solid #cc0000; }
+        h1 { color: #ffcccc; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+        .input-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+        label { font-size: 12px; color: #ff9999; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        input[type="text"], textarea { width: 100%; padding: 15px; border: 1px solid #4d0000; border-radius: 5px; font-size: 16px; background: rgba(0,0,0,0.5); color: white; transition: 0.3s; box-sizing: border-box; font-family: inherit; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #cc0000; background: rgba(0,0,0,0.8); }
+        textarea { min-height: 250px; resize: vertical; }
+
+        .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        button { background-color: #cc0000; color: white; border: none; padding: 12px 30px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
+        button:hover { background-color: #ff3333; }
+        .back-link { color: #999; text-decoration: none; font-weight: bold; }
+        .back-link:hover { color: #ffcccc; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}" th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}" class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/community(username=${username})}">Community</a></div>
+</div>
+
+<div class="main-content">
+    <div class="form-container">
+        <h1>Draft a New Notice</h1>
+        <form th:action="@{/community/new(username=${username})}" th:object="${post}" method="post">
+            <div class="input-group">
+                <label>Topic Title</label>
+                <input type="text" th:field="*{title}" placeholder="A descriptive title..." required>
+            </div>
+            <div class="input-group">
+                <label>Message Content</label>
+                <textarea th:field="*{content}" placeholder="Write your message here..." required></textarea>
+            </div>
+            <div class="actions">
+                <a th:href="@{/community(username=${username})}" class="back-link">Cancel</a>
+                <button type="submit">Post to Board</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

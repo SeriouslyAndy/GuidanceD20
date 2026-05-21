@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title th:text="${post.title} + ' - Guidance D20'">Post</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+        /* Keep sidebar CSS same as community.html */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+
+        .post-container { background: rgba(30, 30, 30, 0.9); border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); max-width: 1000px; width: 100%; border: 1px solid #660000; overflow: hidden; margin-bottom: 30px; }
+
+        .post-header { background: rgba(0,0,0,0.5); padding: 20px 30px; border-bottom: 2px solid #cc0000; display: flex; align-items: center; gap: 20px; }
+        .post-author-pfp { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #ff9999; object-fit: cover; }
+        .post-meta h1 { margin: 0 0 5px 0; color: #ffffff; font-size: 24px; text-shadow: 1px 1px 2px black; }
+        .post-meta span { color: #999; font-size: 14px; }
+        .author-name { color: #ffcccc; font-weight: bold; }
+
+        .post-body { padding: 40px; line-height: 1.6; font-size: 16px; color: #dddddd; white-space: pre-wrap; }
+
+        .back-link { align-self: flex-start; margin-left: auto; margin-right: auto; max-width: 1000px; width: 100%; margin-bottom: 20px; color: #999; text-decoration: none; font-weight: bold; }
+        .back-link:hover { color: #ffcccc; text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}" th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}" class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/community(username=${username})}">Community</a></div>
+</div>
+
+<div class="main-content">
+    <a th:href="@{/community(username=${username})}" class="back-link">← Return to Notice Board</a>
+
+    <div class="post-container">
+        <div class="post-header">
+            <img th:if="${post.author.profilePicture != null}" th:src="'data:image/jpeg;base64,' + ${post.author.profilePicture}" class="post-author-pfp">
+            <div th:unless="${post.author.profilePicture != null}" class="post-author-pfp" style="background: #333;"></div>
+
+            <div class="post-meta">
+                <h1 th:text="${post.title}">Topic Title</h1>
+                <span>Posted by <span class="author-name" th:text="${post.author.username}">User</span> on <span th:text="${post.formattedDate}">Date</span></span>
+            </div>
+        </div>
+        <div class="post-body" th:text="${post.content}">
+            Message content goes here.
+        </div>
+    </div>
+</div>
+</body>
+</html>

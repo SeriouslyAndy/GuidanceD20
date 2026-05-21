@@ -17,3 +17,84 @@ WARNING: Unmatched cancel notification for request id 8
 2026.05.21 17:23:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
 May 21, 2026 5:25:22 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
 INFO: Unsupported notification method: $/setTrace
+2026.05.21 17:40:13 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+May 21, 2026 5:40:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 23
+2026.05.21 17:40:13 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+2026.05.21 17:40:13 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+2026.05.21 17:40:14 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+2026.05.21 17:40:14 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+2026.05.21 17:40:37 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+May 21, 2026 5:40:37 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 35
+2026.05.21 17:40:37 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/UserService.java. Using fallback presentation compiler.
+2026.05.21 17:40:39 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:40 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:39 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:39 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:39 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:41 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:41 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:49 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:40:49 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:41:01 WARN  no build target for: /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java
+2026.05.21 17:41:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:46:29 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:29 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:29 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:29 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:29 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:30 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:30 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:30 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:30 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:30 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:31 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:32 WARN  Running javac-semanticdb failed for file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Output:
+
+2026.05.21 17:46:32 INFO  Created report: Optional[file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java]
+2026.05.21 17:46:32 INFO  QDox parse error in file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java (full report at: "/home/javaket/Desktop/Homework/WP2/project/GuidanceD20/.metals/.reports/metals-full/2026-05-21/r_qdox-error_17-46-32-468.md")
+2026.05.21 17:46:32 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:32 INFO  QDox parse error in file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java (full report at: "/home/javaket/Desktop/Homework/WP2/project/GuidanceD20/.metals/.reports/metals-full/2026-05-21/r_qdox-error_17-46-32-468.md")
+2026.05.21 17:46:32 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:32 INFO  QDox parse error in file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java (full report at: "/home/javaket/Desktop/Homework/WP2/project/GuidanceD20/.metals/.reports/metals-full/2026-05-21/r_qdox-error_17-46-32-468.md")
+2026.05.21 17:46:32 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:32 INFO  QDox parse error in file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java (full report at: "/home/javaket/Desktop/Homework/WP2/project/GuidanceD20/.metals/.reports/metals-full/2026-05-21/r_qdox-error_17-46-32-468.md")
+2026.05.21 17:46:32 INFO  Created report: Optional[file:///home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java]
+2026.05.21 17:46:32 INFO  empty definition using pc, found symbol in pc: _empty_/GenerationType#IDENTITY# (full report at: "/home/javaket/Desktop/Homework/WP2/project/GuidanceD20/.metals/.reports/metals-full/2026-05-21/r_empty-definition_17-46-32-560.md")
+2026.05.21 17:46:32 WARN  no build target for: /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java
+2026.05.21 17:46:32 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:38 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPost.java. Using fallback presentation compiler.
+2026.05.21 17:46:53 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:54 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:54 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:54 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:54 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:54 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:55 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:55 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:55 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:55 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:55 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:46:56 WARN  no build target for: /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java
+2026.05.21 17:46:56 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/ForumPostRepository.java. Using fallback presentation compiler.
+2026.05.21 17:47:58 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:58 WARN  no build target for: /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java
+2026.05.21 17:47:58 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:58 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:58 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:59 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:59 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:59 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:59 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:47:59 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:48:00 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.
+2026.05.21 17:48:01 WARN  no build target for: /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java
+2026.05.21 17:48:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/WebController.java. Using fallback presentation compiler.

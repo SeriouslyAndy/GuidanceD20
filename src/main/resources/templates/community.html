@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - Community</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        /* Consistent Sidebar */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
+
+        /* Forum Specific Styling */
+        .forum-container { background: rgba(30, 30, 30, 0.9); padding: 40px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); max-width: 1000px; width: 100%; border: 1px solid #660000; border-top: 5px solid #cc0000; margin: 0 auto; }
+        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        h1 { color: #ffcccc; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; }
+
+        .btn-create { background-color: #cc0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .btn-create:hover { background-color: #ff3333; transform: translateY(-2px); }
+
+        .forum-table { width: 100%; border-collapse: collapse; }
+        .forum-table th { background: rgba(0,0,0,0.5); color: #ff9999; text-transform: uppercase; font-size: 12px; padding: 15px; text-align: left; border-bottom: 2px solid #660000; }
+        .forum-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .forum-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .topic-link { color: #ffffff; text-decoration: none; font-size: 18px; font-weight: bold; transition: 0.2s; }
+        .topic-link:hover { color: #ffcccc; text-decoration: underline; }
+        .topic-author { display: flex; align-items: center; gap: 10px; color: #cccccc; font-size: 14px; }
+        .author-pfp { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid #666; }
+        .topic-date { color: #999; font-size: 13px; }
+
+        .empty-state { text-align: center; color: #999; padding: 50px; font-style: italic; background: rgba(0,0,0,0.2); border-radius: 5px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+             th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}" class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <div class="forum-container">
+        <div class="header-action">
+            <h1>Tavern Notice Board</h1>
+            <a th:href="@{/community/new(username=${username})}" class="btn-create">+ Start New Topic</a>
+        </div>
+
+        <table class="forum-table" th:if="${not #lists.isEmpty(posts)}">
+            <thead>
+            <tr>
+                <th style="width: 60%;">Topic</th>
+                <th>Author</th>
+                <th>Posted On</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post : ${posts}">
+                <td>
+                    <a th:href="@{/community/post/{id}(id=${post.id}, username=${username})}" class="topic-link" th:text="${post.title}">Topic Title</a>
+                </td>
+                <td>
+                    <div class="topic-author">
+                        <img th:if="${post.author.profilePicture != null}" th:src="'data:image/jpeg;base64,' + ${post.author.profilePicture}" class="author-pfp">
+                        <div th:unless="${post.author.profilePicture != null}" class="author-pfp" style="background: #333;"></div>
+                        <span th:text="${post.author.username}">Author Name</span>
+                    </div>
+                </td>
+                <td class="topic-date" th:text="${post.formattedDate}">Date</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
+            No patrons have posted on the notice board yet. Be the first!
+        </div>
+    </div>
+</div>
+</body>
+</html>

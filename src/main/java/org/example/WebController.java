@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,42 +22,20 @@ public class WebController {
     private final DndClassRepository classRepository;
     private final SpellRepository spellRepository;
     private final SpellzCompare spellzCompare;
+    private final ForumPostRepository forumPostRepository;
 
-    public WebController(UserService userService, CharacterSheetRepository characterSheetRepository, DndClassRepository classRepository, SpellRepository spellRepository, SpellzCompare spellzCompare) {
+    public WebController(UserService userService, 
+                         CharacterSheetRepository characterSheetRepository, 
+                         DndClassRepository classRepository, 
+                         SpellRepository spellRepository, 
+                         SpellzCompare spellzCompare,
+                         ForumPostRepository forumPostRepository) {
         this.userService = userService;
         this.characterSheetRepository = characterSheetRepository;
         this.classRepository = classRepository;
         this.spellRepository = spellRepository;
         this.spellzCompare = spellzCompare;
-    }
-
-    @GetMapping("/spell-helper")
-    public String spellHelper(@RequestParam("username") String username, Model model) {
-        model.addAttribute("username", username);
-
-        // Fetch all spells from MariaDB and pass them to the template
-        model.addAttribute("spells", spellRepository.findAll());
-        return "spell-helper";
-    }
-
-    /**
-     * NAT_2_0 endpoint - returns the comparison score between two spells
-     * as JSON, consumed by the spell-helper UI.
-     *
-     *   GET /api/compare-spells?a=<spellIdA>&b=<spellIdB>
-     */
-    @GetMapping("/api/compare-spells")
-    @ResponseBody
-    public SpellzCompare.Nat20Result compareSpells(
-            @RequestParam("a") Integer aId,
-            @RequestParam("b") Integer bId) {
-
-        Spell a = spellRepository.findById(aId)
-                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + aId));
-        Spell b = spellRepository.findById(bId)
-                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + bId));
-
-        return spellzCompare.compare(a, b);
+        this.forumPostRepository = forumPostRepository;
     }
 
     @GetMapping("/")
@@ -93,15 +72,57 @@ public class WebController {
     @GetMapping("/dashboard")
     public String dashboard(@RequestParam(value = "username", required = false, defaultValue = "Adventurer") String username, Model model) {
         model.addAttribute("username", username);
+        // FIXED: Safely unwraps the Optional so that dashboard.html can load the profile sidebar properties contextually
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
         return "dashboard";
+    }
+
+    @GetMapping("/spell-helper")
+    public String spellHelper(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
+
+        // Fetch all spells from MariaDB and pass them to the template
+        model.addAttribute("spells", spellRepository.findAll());
+        return "spell-helper";
+    }
+
+    /**
+     * NAT_2_0 endpoint - returns the comparison score between two spells
+     * as JSON, consumed by the spell-helper UI.
+     *
+     * GET /api/compare-spells?a=<spellIdA>&b=<spellIdB>
+     */
+    @GetMapping("/api/compare-spells")
+    @ResponseBody
+    public SpellzCompare.Nat20Result compareSpells(
+            @RequestParam("a") Integer aId,
+            @RequestParam("b") Integer bId) {
+
+        Spell a = spellRepository.findById(aId)
+                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + aId));
+        Spell b = spellRepository.findById(bId)
+                .orElseThrow(() -> new IllegalArgumentException("Spell not found: " + bId));
+
+        return spellzCompare.compare(a, b);
+    }
+
+    @GetMapping("/nat20-info")
+    public String nat20Info(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
+        return "nat20-info";
     }
 
     @GetMapping("/my-characters")
     public String myCharacters(@RequestParam("username") String username, Model model) {
         model.addAttribute("username", username);
-        Optional<User> userOpt = userService.findByUsername(username);
-        if (userOpt.isPresent()) {
-            List<CharacterSheet> characters = characterSheetRepository.findByUserId(userOpt.get().getId());
+        
+        User currentUser = userService.findByUsername(username).orElse(null);
+        model.addAttribute("currentUser", currentUser);
+        
+        if (currentUser != null) {
+            List<CharacterSheet> characters = characterSheetRepository.findByUserId(currentUser.getId());
             model.addAttribute("characters", characters);
         }
         return "my-characters";
@@ -112,11 +133,13 @@ public class WebController {
                                  @RequestParam(value = "id", required = false) Long id,
                                  Model model) {
         model.addAttribute("username", username);
-        Optional<User> userOpt = userService.findByUsername(username);
+        
+        User currentUser = userService.findByUsername(username).orElse(null);
+        model.addAttribute("currentUser", currentUser);
 
-        if (userOpt.isPresent()) {
+        if (currentUser != null) {
             if (id != null) {
-                Optional<CharacterSheet> existing = characterSheetRepository.findByIdAndUserId(id, userOpt.get().getId());
+                Optional<CharacterSheet> existing = characterSheetRepository.findByIdAndUserId(id, currentUser.getId());
                 model.addAttribute("sheet", existing.orElseGet(this::createDefaultSheet));
             } else {
                 model.addAttribute("sheet", createDefaultSheet());
@@ -151,6 +174,7 @@ public class WebController {
     @GetMapping("/settings")
     public String settingsPage(@RequestParam("username") String username, Model model) {
         model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
         return "settings";
     }
 
@@ -173,6 +197,46 @@ public class WebController {
         // Smart Redirect: Read where the user came from and send them back there
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/dashboard?username=" + username);
+    }
+
+    // --- COMMUNITY FORUM ROUTE MAPPINGS ---
+
+    @GetMapping("/community")
+    public String communityPage(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
+        model.addAttribute("posts", forumPostRepository.findAllByOrderByCreatedAtDesc());
+        return "community";
+    }
+
+    @GetMapping("/community/new")
+    public String newTopicPage(@RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
+        model.addAttribute("post", new ForumPost());
+        return "community-new";
+    }
+
+    @PostMapping("/community/new")
+    public String createTopic(@RequestParam("username") String username, @ModelAttribute("post") ForumPost post) {
+        Optional<User> authorOpt = userService.findByUsername(username);
+        if (authorOpt.isPresent()) {
+            post.setAuthor(authorOpt.get());
+            forumPostRepository.save(post);
+        }
+        return "redirect:/community?username=" + username;
+    }
+
+    @GetMapping("/community/post/{id}")
+    public String viewPost(@PathVariable("id") Long id, @RequestParam("username") String username, Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("currentUser", userService.findByUsername(username).orElse(null));
+        
+        ForumPost post = forumPostRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + id));
+                
+        model.addAttribute("post", post);
+        return "community-post";
     }
 
     private CharacterSheet createDefaultSheet() {

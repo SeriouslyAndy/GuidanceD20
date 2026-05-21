@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
 
-        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; }
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
         .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
         .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
 
@@ -22,6 +22,10 @@
         .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
         .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
         .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+        /* NAT 2.0 Admin Panel Custom Gold Accent Styles */
+        .menu-item.admin a { color: #ffd54a; }
+        .menu-item.admin a:hover { color: #fff7d6; text-shadow: 0 0 5px #ffd54a; }
 
         .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
         .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
@@ -63,8 +67,13 @@
 
     <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
     <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
     <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
     <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+
+    <div class="menu-item admin" th:if="${currentUser != null and currentUser.isAdmin}">
+        <a th:href="@{/admin(username=${username})}">&#9670; Admin Panel</a>
+    </div>
 
     <div class="logout"><a th:href="@{/login}">Log out</a></div>
 </div>
