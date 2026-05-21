@@ -46,7 +46,6 @@
                      class="profile-pic" alt="Avatar" />
                 <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
 
-                <div class="pfp-overlay">UPLOAD</div>
             </label>
             <input type="file" id="pfp-upload" name="file" accept="image/png, image/jpeg" style="display: none;" onchange="document.getElementById('pfp-form').submit();">
         </form>

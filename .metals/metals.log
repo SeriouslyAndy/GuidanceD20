@@ -1,0 +1,17 @@
+2026.05.21 17:20:42 INFO  Started: Metals version 1.6.7 in folders '/home/javaket/Desktop/Homework/WP2/project/GuidanceD20' for client Visual Studio Code 1.113.0.
+2026.05.21 17:20:42 INFO  Memory monitor started
+2026.05.21 17:20:42 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.05.21 17:20:42 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:43 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+May 21, 2026 5:20:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7
+May 21, 2026 5:20:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+2026.05.21 17:23:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
