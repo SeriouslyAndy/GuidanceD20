@@ -16,9 +16,29 @@
         .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
         .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
         .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .menu-item.admin a { color: #ffd54a; }
+        .menu-item.admin a:hover { color: #fff7d6; text-shadow: 0 0 5px #ffd54a; }
         .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
         .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
         .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        /* ===== Loadout library (between sidebar and main content) ===== */
+        .loadout { width: 240px; flex-shrink: 0; background: linear-gradient(to bottom, #1a0606, #0d0303); border-right: 1px solid #330000; box-shadow: inset -4px 0 10px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; }
+        .loadout-head { padding: 18px 18px 12px 18px; border-bottom: 1px solid #330000; }
+        .loadout-head h3 { margin: 0; color: #ffcccc; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; }
+        .loadout-head p { margin: 4px 0 0 0; color: #888; font-size: 11px; font-style: italic; }
+        .loadout-list { flex-grow: 1; overflow-y: auto; padding: 10px; }
+        .loadout-empty { color: #555; font-size: 12px; font-style: italic; text-align: center; padding: 30px 10px; line-height: 1.5; }
+        .loadout-item { background: rgba(30, 30, 30, 0.7); border: 1px solid #4d0000; border-left: 3px solid #cc0000; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; position: relative; }
+        .loadout-item:hover { background: rgba(50, 20, 20, 0.9); border-left-color: #ff6666; }
+        .loadout-item.disabled { opacity: 0.4; border-left-color: #555; }
+        .loadout-item.disabled:hover { opacity: 0.6; }
+        .loadout-item.conflict { border-color: #ff6633; border-left-color: #ff3300; box-shadow: 0 0 8px rgba(255,51,0,0.3); }
+        .loadout-item-name { color: #ffcccc; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; padding-right: 22px; }
+        .loadout-item-name .warn { font-size: 14px; filter: drop-shadow(0 0 3px rgba(255,200,0,0.6)); }
+        .loadout-item-sub { color: #888; font-size: 10px; font-style: italic; margin-top: 2px; }
+        .loadout-item-remove { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.5); border: none; color: #ff8888; width: 18px; height: 18px; border-radius: 50%; font-size: 14px; line-height: 1; cursor: pointer; padding: 0; transition: 0.15s; }
+        .loadout-item-remove:hover { background: #cc0000; color: white; }
 
         .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
 
@@ -38,6 +58,11 @@
         .stat-item label { display: block; color: #ff9999; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
         .stat-item span { color: #fff; font-size: 14px; }
 
+        /* Damage banner - only shown when the spell has a damage value */
+        .damage-banner { display: none; align-items: center; gap: 12px; margin-bottom: 20px; padding: 12px 16px; background: linear-gradient(to right, rgba(204,68,0,0.18), rgba(204,0,0,0.10)); border: 1px solid #cc4400; border-left: 4px solid #ff6622; border-radius: 5px; }
+        .damage-banner .label { color: #ffaa66; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        .damage-banner .value { color: #ffdd99; font-size: 18px; font-weight: bold; font-family: Georgia, serif; }
+
         .spell-desc { line-height: 1.6; color: #ccc; font-size: 15px; white-space: pre-wrap; }
         .higher-levels { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #660000; color: #ffcc99; }
 
@@ -46,6 +71,12 @@
         .tag-chip { display: inline-block; padding: 4px 10px; background: linear-gradient(to bottom, #660000, #330000); border: 1px solid #cc0000; border-radius: 12px; font-size: 11px; color: #ffcccc; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
         .tag-empty { color: #777; font-style: italic; font-size: 12px; padding: 4px 0; }
         .tag-label { width: 100%; color: #ff9999; font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; }
+
+        /* ===== Choose spell button (adds the current spell to the loadout) ===== */
+        .choose-spell-btn { display: block; width: 100%; padding: 12px; margin-bottom: 20px; background: linear-gradient(to bottom, #800000, #330000); border: 1px solid #cc0000; border-radius: 5px; color: #ffcccc; font-size: 13px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .choose-spell-btn:hover { background: linear-gradient(to bottom, #cc0000, #660000); color: white; box-shadow: 0 0 12px rgba(204,0,0,0.5); }
+        .choose-spell-btn.in-loadout { background: rgba(60, 30, 30, 0.6); border-style: dashed; cursor: default; color: #888; }
+        .choose-spell-btn.in-loadout:hover { background: rgba(60, 30, 30, 0.6); color: #888; box-shadow: none; }
 
         /* ===== NAT_2_0 score panel ===== */
         .nat20-panel { display: none; max-width: 1200px; margin: 30px auto 0 auto; background: linear-gradient(135deg, rgba(40,0,0,0.95), rgba(20,0,0,0.95)); border: 2px solid #cc0000; border-radius: 12px; padding: 30px; box-shadow: 0 10px 40px rgba(204,0,0,0.3); position: relative; overflow: hidden; }
@@ -104,9 +135,24 @@
     <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
     <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
     <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item admin" th:if="${currentUser != null and currentUser.isAdmin}"><a th:href="@{/admin(username=${username})}">&#9670; Admin Panel</a></div>
     <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
     <div class="logout"><a th:href="@{/login}">Log out</a></div>
 </div>
+
+<!-- ===== Loadout library: the spells the user is building a kit from ===== -->
+<aside class="loadout" aria-label="Selected spell loadout">
+    <div class="loadout-head">
+        <h3>Your Loadout</h3>
+        <p>Click to toggle. Spells flagged with &#9888; conflict with another active pick.</p>
+    </div>
+    <div class="loadout-list" id="loadout-list">
+        <div class="loadout-empty" id="loadout-empty">
+            No spells chosen yet.<br>
+            Use <em>Choose Spell</em> in either column to add one.
+        </div>
+    </div>
+</aside>
 
 <div class="main-content">
     <h1 class="header-title">Spell Helper Archive</h1>
@@ -130,6 +176,11 @@
                     <div class="stat-item"><label>Duration</label><span id="dur-1"></span></div>
                 </div>
 
+                <div class="damage-banner" id="damage-1">
+                    <span class="label">Damage</span>
+                    <span class="value" id="damage-value-1"></span>
+                </div>
+
                 <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
                     <canvas id="chart-1"></canvas>
                 </div>
@@ -137,6 +188,8 @@
                 <div class="tag-chips" id="tags-1">
                     <div class="tag-label">Tags</div>
                 </div>
+
+                <button type="button" class="choose-spell-btn" id="choose-btn-1" onclick="addCurrentSpellToLoadout('1')">+ Choose Spell</button>
 
                 <div id="desc-1" class="spell-desc"></div>
                 <div id="higher-1" class="spell-desc higher-levels"></div>
@@ -157,6 +210,11 @@
                     <div class="stat-item"><label>Duration</label><span id="dur-2"></span></div>
                 </div>
 
+                <div class="damage-banner" id="damage-2">
+                    <span class="label">Damage</span>
+                    <span class="value" id="damage-value-2"></span>
+                </div>
+
                 <div style="width: 100%; max-width: 300px; margin: 0 auto 20px auto;">
                     <canvas id="chart-2"></canvas>
                 </div>
@@ -164,6 +222,8 @@
                 <div class="tag-chips" id="tags-2">
                     <div class="tag-label">Tags</div>
                 </div>
+
+                <button type="button" class="choose-spell-btn" id="choose-btn-2" onclick="addCurrentSpellToLoadout('2')">+ Choose Spell</button>
 
                 <div id="desc-2" class="spell-desc"></div>
                 <div id="higher-2" class="spell-desc higher-levels"></div>
@@ -222,6 +282,177 @@
     // Track which spell is currently selected in each column (by id).
     // Both must be set for the NAT 20 panel to appear.
     const selectedIds = { 1: null, 2: null };
+
+    // The Loadout - spells the user has "chosen". An array of
+    // { id: <spell-id>, enabled: <bool> }. Order = insertion order.
+    // Lives only in memory; reloading the page clears it.
+    const loadout = [];
+
+    // Conflict threshold: total NAT_2_0 < this value means heavy overlap
+    // ("these do the same thing") and we flag both spells with a warning.
+    // Matches the red verdict band used elsewhere in the UI.
+    const CONFLICT_THRESHOLD = 7.0;
+
+    // ============================================================
+    // NAT_2_0 scoring - mirror of SpellzCompare.java for fast,
+    // synchronous pairwise checks across the whole loadout.
+    // Any change here must be mirrored on the server side.
+    // ============================================================
+    const SECTOR_K_JS = Math.sqrt(3) / 4.0;
+
+    function hexValues(s) {
+        return [s.scoreDamage, s.scoreMitigation, s.scoreUtility,
+                s.scoreRoleplay, s.scoreHealing, s.scoreUnity];
+    }
+
+    function normalisedTagSet(s) {
+        const set = new Set();
+        (s.tags || []).forEach(t => {
+            if (!t) return;
+            const v = t.trim().toLowerCase();
+            if (v) set.add(v);
+        });
+        return set;
+    }
+
+    function nat20Total(a, b) {
+        // Main Tags - hexagon IoU
+        const va = hexValues(a), vb = hexValues(b);
+        let areaA = 0, areaB = 0, overlap = 0;
+        for (let i = 0; i < 6; i++) {
+            const j = (i + 1) % 6;
+            areaA   += va[i] * va[j];
+            areaB   += vb[i] * vb[j];
+            overlap += Math.min(va[i], vb[i]) * Math.min(va[j], vb[j]);
+        }
+        areaA *= SECTOR_K_JS; areaB *= SECTOR_K_JS; overlap *= SECTOR_K_JS;
+        const union = areaA + areaB - overlap;
+        const mt = union > 0 ? 10 * (1 - overlap / union) : 0;
+
+        // Tags - Jaccard
+        const setA = normalisedTagSet(a), setB = normalisedTagSet(b);
+        let t;
+        if (setA.size === 0 || setB.size === 0) {
+            t = 5; // neutral - matches Java side
+        } else {
+            let inter = 0;
+            setA.forEach(x => { if (setB.has(x)) inter++; });
+            const u = setA.size + setB.size - inter;
+            t = 10 * (1 - inter / u);
+        }
+        return mt + t;
+    }
+
+    // ============================================================
+    // Loadout management
+    // ============================================================
+    function findInLoadout(spellId) {
+        return loadout.find(item => item.id === spellId);
+    }
+
+    function addCurrentSpellToLoadout(suffix) {
+        const spellId = selectedIds[suffix];
+        if (!spellId) return;
+        if (!findInLoadout(spellId)) {
+            loadout.push({ id: spellId, enabled: true });
+        }
+        renderLoadout();
+        // Refresh choose-button states in both columns
+        updateChooseButton('1');
+        updateChooseButton('2');
+    }
+
+    function toggleLoadoutItem(spellId) {
+        const item = findInLoadout(spellId);
+        if (item) {
+            item.enabled = !item.enabled;
+            renderLoadout();
+        }
+    }
+
+    function removeFromLoadout(spellId) {
+        const i = loadout.findIndex(it => it.id === spellId);
+        if (i >= 0) {
+            loadout.splice(i, 1);
+            renderLoadout();
+            updateChooseButton('1');
+            updateChooseButton('2');
+        }
+    }
+
+    function updateChooseButton(suffix) {
+        const btn = document.getElementById('choose-btn-' + suffix);
+        const id = selectedIds[suffix];
+        if (id && findInLoadout(id)) {
+            btn.classList.add('in-loadout');
+            btn.innerText = '\u2713 In Loadout';
+        } else {
+            btn.classList.remove('in-loadout');
+            btn.innerText = '+ Choose Spell';
+        }
+    }
+
+    // Identify which loadout entries are in conflict with at least one
+    // OTHER enabled entry. Returns a Set<spellId>.
+    function findConflicts() {
+        const conflicting = new Set();
+        const enabled = loadout
+            .filter(it => it.enabled)
+            .map(it => ({ item: it, spell: spellsData.find(s => s.id === it.id) }))
+            .filter(p => p.spell);
+
+        for (let i = 0; i < enabled.length; i++) {
+            for (let j = i + 1; j < enabled.length; j++) {
+                if (nat20Total(enabled[i].spell, enabled[j].spell) < CONFLICT_THRESHOLD) {
+                    conflicting.add(enabled[i].item.id);
+                    conflicting.add(enabled[j].item.id);
+                }
+            }
+        }
+        return conflicting;
+    }
+
+    function renderLoadout() {
+        const list  = document.getElementById('loadout-list');
+        const empty = document.getElementById('loadout-empty');
+
+        if (loadout.length === 0) {
+            list.innerHTML = '';
+            list.appendChild(empty);
+            return;
+        }
+        empty.remove();
+        const conflicts = findConflicts();
+
+        // Build by replacing innerHTML in one pass.
+        list.innerHTML = loadout.map(item => {
+            const spell = spellsData.find(s => s.id === item.id);
+            if (!spell) return '';
+            const isConflict = item.enabled && conflicts.has(item.id);
+            const classes = ['loadout-item'];
+            if (!item.enabled) classes.push('disabled');
+            if (isConflict)    classes.push('conflict');
+            const levelTxt = spell.spellLevel === 0
+                ? 'Cantrip ' + spell.school
+                : 'Level ' + spell.spellLevel + ' ' + spell.school;
+            const warn = isConflict ? '<span class="warn" title="Conflicts with another active spell">&#9888;&#65039;</span>' : '';
+            return ''
+                + '<div class="' + classes.join(' ') + '" onclick="toggleLoadoutItem(' + spell.id + ')">'
+                +   '<button class="loadout-item-remove" title="Remove from loadout" onclick="event.stopPropagation(); removeFromLoadout(' + spell.id + ')">&times;</button>'
+                +   '<div class="loadout-item-name">'
+                +     '<span>' + escapeHtml(spell.name) + '</span>'
+                +     warn
+                +   '</div>'
+                +   '<div class="loadout-item-sub">' + escapeHtml(levelTxt) + (item.enabled ? '' : ' &middot; off') + '</div>'
+                + '</div>';
+        }).join('');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
 
     // ---- Hexagon overlap SVG ------------------------------------------------
     // Axes go clockwise starting at the top, matching the radar chart in

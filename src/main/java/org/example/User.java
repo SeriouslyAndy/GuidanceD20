@@ -27,4 +27,7 @@ public class User {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String profilePicture;
+
+    @Column(name = "is_admin")
+    private Boolean isAdmin = false;
 }

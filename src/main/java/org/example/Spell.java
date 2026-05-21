@@ -51,6 +51,9 @@ public class Spell {
     @Column(name = "higher_levels", columnDefinition = "TEXT")
     private String higherLevels;
 
+    @Column(name = "damage")
+    private String damage;
+
     @Column(name = "score_damage")
     private int scoreDamage = 1;
 
@@ -69,8 +72,8 @@ public class Spell {
     @Column(name = "score_unity")
     private int scoreUnity = 1;
 
-    // Flavour tags used by the NAT_2_0 T-score (admin-defined, unlimited).
-    // Example: "concentration", "area-damage", "long-range", "fire".
+    // Hello Mewoooos! Flavour tags used by the NAT_2_0 T-score
+    // Example: "concentration", "area-damage", "long-range", "fire". etc! check the markdown!
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "spell_tags",
