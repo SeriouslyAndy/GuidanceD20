@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        /* Sidebar (shared style) */
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .menu-item.admin a { color: #ffd54a; }
+        .menu-item.admin a:hover { color: #fff7d6; text-shadow: 0 0 5px #ffd54a; }
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        .main-content { flex-grow: 1; padding: 40px; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; overflow-y: auto; }
+        .header-title { color: #ffcccc; border-bottom: 2px solid #cc0000; padding-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: 0; margin-bottom: 30px; }
+
+        .admin-section { background: rgba(30, 30, 30, 0.9); padding: 25px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.8); border: 1px solid #660000; border-top: 5px solid #cc0000; margin-bottom: 30px; max-width: 1100px; }
+        .admin-section h2 { color: #ffcccc; margin-top: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px dashed #660000; }
+
+        .spell-row { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .spell-row:last-child { border-bottom: none; }
+        .spell-row-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+        .spell-row-name { color: #ffcccc; font-weight: bold; font-size: 16px; }
+        .spell-row-sub { color: #999; font-size: 12px; font-style: italic; }
+
+        .tag-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .tag-chip-admin { display: inline-flex; align-items: center; gap: 6px; padding: 4px 4px 4px 10px; background: linear-gradient(to bottom, #660000, #330000); border: 1px solid #cc0000; border-radius: 12px; font-size: 11px; color: #ffcccc; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
+        .tag-chip-admin button { background: rgba(0,0,0,0.4); border: none; color: #ffaaaa; cursor: pointer; padding: 0 6px; margin: 0; font-size: 13px; line-height: 1; border-radius: 50%; height: 18px; width: 18px; transition: 0.15s; }
+        .tag-chip-admin button:hover { background: #cc0000; color: white; }
+        .tag-add-form { display: inline-flex; gap: 6px; margin-left: 4px; }
+        .tag-add-form input { padding: 4px 10px; border: 1px solid #4d0000; border-radius: 12px; background: rgba(0,0,0,0.5); color: white; font-size: 11px; text-transform: lowercase; width: 130px; }
+        .tag-add-form input:focus { outline: none; border-color: #cc0000; }
+        .tag-add-form button { padding: 4px 12px; border: 1px solid #cc0000; border-radius: 12px; background: rgba(204,0,0,0.2); color: #ffcccc; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.15s; }
+        .tag-add-form button:hover { background: #cc0000; color: white; }
+
+        .user-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .user-row:last-child { border-bottom: none; }
+        .user-name { color: #ffcccc; font-weight: bold; flex-grow: 1; }
+        .user-role-badge { padding: 3px 10px; border-radius: 999px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .role-admin { background: rgba(255,213,74,0.15); color: #ffd54a; border: 1px solid #ffd54a; }
+        .role-user  { background: rgba(255,255,255,0.05); color: #999; border: 1px solid rgba(255,255,255,0.1); }
+        .user-action button { padding: 6px 14px; border: 1px solid #cc0000; background: rgba(204,0,0,0.15); color: #ffcccc; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; letter-spacing: 0.5px; transition: 0.15s; }
+        .user-action button:hover { background: #cc0000; color: white; }
+        .user-action button.demote { border-color: #777; color: #aaa; background: rgba(255,255,255,0.04); }
+        .user-action button.demote:hover { background: #444; color: white; }
+        .user-self-note { font-size: 11px; color: #777; font-style: italic; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+             th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
+             class="profile-pic" alt="Avatar" />
+        <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+        <h2 style="margin-bottom: 5px;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/spell-helper(username=${username})}">Spell Helper</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item admin"><a th:href="@{/admin(username=${username})}">&#9670; Admin Panel</a></div>
+    <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <h1 class="header-title">Admin Panel</h1>
+
+    <div class="admin-section" id="spells">
+        <h2>Spell Tags</h2>
+        <div class="spell-row" th:each="spell : ${spells}" th:id="'spell-' + ${spell.id}">
+            <div class="spell-row-head">
+                <span class="spell-row-name" th:text="${spell.name}">Spell</span>
+                <span class="spell-row-sub"
+                      th:text="(${spell.spellLevel} == 0 ? 'Cantrip' : 'Level ' + ${spell.spellLevel}) + ' ' + ${spell.school}">Level X School</span>
+            </div>
+            <div class="tag-chips">
+                <span class="tag-chip-admin" th:each="tag : ${spell.tags}">
+                    <span th:text="${tag}">tag</span>
+                    <form th:action="@{|/admin/spells/${spell.id}/tags/remove|}" method="post" style="display:inline">
+                        <input type="hidden" name="username" th:value="${username}">
+                        <input type="hidden" name="tag" th:value="${tag}">
+                        <button type="submit" title="Remove tag">&times;</button>
+                    </form>
+                </span>
+                <form class="tag-add-form" th:action="@{|/admin/spells/${spell.id}/tags/add|}" method="post">
+                    <input type="hidden" name="username" th:value="${username}">
+                    <input type="text" name="tag" placeholder="add a tag..." required maxlength="40">
+                    <button type="submit">+ Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-section" id="users">
+        <h2>Users</h2>
+        <div class="user-row" th:each="user : ${users}">
+            <span class="user-name" th:text="${user.username}">user</span>
+            <span class="user-role-badge"
+                  th:classappend="${user.isAdmin != null and user.isAdmin} ? 'role-admin' : 'role-user'"
+                  th:text="${user.isAdmin != null and user.isAdmin} ? 'Admin' : 'User'">User</span>
+            <div class="user-action">
+                <th:block th:if="${user.isAdmin == null or !user.isAdmin}">
+                    <form th:action="@{|/admin/users/${user.id}/promote|}" method="post">
+                        <input type="hidden" name="username" th:value="${username}">
+                        <button type="submit">Promote to Admin</button>
+                    </form>
+                </th:block>
+                <th:block th:if="${user.isAdmin != null and user.isAdmin}">
+                    <th:block th:if="${user.username == username}">
+                        <span class="user-self-note">(that's you)</span>
+                    </th:block>
+                    <th:block th:if="${user.username != username}">
+                        <form th:action="@{|/admin/users/${user.id}/demote|}" method="post">
+                            <input type="hidden" name="username" th:value="${username}">
+                            <button type="submit" class="demote">Demote</button>
+                        </form>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

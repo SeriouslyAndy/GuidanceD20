@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Set;
 
 @Configuration
 public class DatabaseSeeder {
@@ -169,8 +168,9 @@ public class DatabaseSeeder {
         s0.setCompV(true); s0.setCompS(true); s0.setCompM(false);
         s0.setDescription("You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage.");
         s0.setScoreDamage(3); s0.setScoreMitigation(1); s0.setScoreUtility(2); s0.setScoreRoleplay(1); s0.setScoreHealing(1); s0.setScoreUnity(1);
-        s0.setClasses(Set.of(sorcerer));
-        s0.setTags(new java.util.HashSet<>(List.of("damage", "ranged", "single-target", "fire", "cantrip", "no-concentration", "attack-roll")));
+        s0.setClasses(List.of(sorcerer));
+        s0.setDamage("1d10 fire");
+        s0.setTags(new java.util.ArrayList<>(List.of("damage", "ranged", "single-target", "fire", "cantrip", "no-concentration", "attack-roll")));
         spellRepository.save(s0);
 
         Spell s1 = new Spell();
@@ -178,8 +178,8 @@ public class DatabaseSeeder {
         s1.setCompV(true); s1.setCompS(true); s1.setCompM(false);
         s1.setDescription("An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC.");
         s1.setScoreDamage(1); s1.setScoreMitigation(6); s1.setScoreUtility(1); s1.setScoreRoleplay(1); s1.setScoreHealing(1); s1.setScoreUnity(1);
-        s1.setClasses(Set.of(sorcerer));
-        s1.setTags(new java.util.HashSet<>(List.of("mitigation", "self", "reaction", "no-concentration", "short-duration", "defensive", "force")));
+        s1.setClasses(List.of(sorcerer));
+        s1.setTags(new java.util.ArrayList<>(List.of("mitigation", "self", "reaction", "no-concentration", "short-duration", "defensive", "force")));
         spellRepository.save(s1);
 
         Spell s2 = new Spell();
@@ -187,8 +187,8 @@ public class DatabaseSeeder {
         s2.setCompV(true); s2.setCompS(false); s2.setCompM(true); s2.setMaterials("A snake's tongue and either a bit of honeycomb or a drop of sweet oil");
         s2.setDescription("You suggest a course of activity and magically influence a creature you can see within range that can hear and understand you.");
         s2.setScoreDamage(1); s2.setScoreMitigation(2); s2.setScoreUtility(5); s2.setScoreRoleplay(6); s2.setScoreHealing(1); s2.setScoreUnity(2);
-        s2.setClasses(Set.of(sorcerer));
-        s2.setTags(new java.util.HashSet<>(List.of("control", "single-target", "concentration", "social", "long-duration", "mind-affecting", "save-wisdom")));
+        s2.setClasses(List.of(sorcerer));
+        s2.setTags(new java.util.ArrayList<>(List.of("control", "single-target", "concentration", "social", "long-duration", "mind-affecting", "save-wisdom")));
         spellRepository.save(s2);
 
         Spell s3 = new Spell();
@@ -196,8 +196,9 @@ public class DatabaseSeeder {
         s3.setCompV(true); s3.setCompS(true); s3.setCompM(true); s3.setMaterials("A tiny ball of bat guano and sulfur");
         s3.setDescription("A bright streak flashes from your pointing finger to a point you choose within range then blossoms with a low roar into an explosion of flame.");
         s3.setScoreDamage(6); s3.setScoreMitigation(1); s3.setScoreUtility(2); s3.setScoreRoleplay(1); s3.setScoreHealing(1); s3.setScoreUnity(1);
-        s3.setClasses(Set.of(sorcerer));
-        s3.setTags(new java.util.HashSet<>(List.of("damage", "area-damage", "fire", "ranged", "no-concentration", "save-dexterity", "iconic")));
+        s3.setClasses(List.of(sorcerer));
+        s3.setDamage("8d6 fire");
+        s3.setTags(new java.util.ArrayList<>(List.of("damage", "area-damage", "fire", "ranged", "no-concentration", "save-dexterity", "iconic")));
         spellRepository.save(s3);
 
         Spell s4 = new Spell();
@@ -205,8 +206,8 @@ public class DatabaseSeeder {
         s4.setCompV(true); s4.setCompS(true); s4.setCompM(true); s4.setMaterials("A caterpillar cocoon");
         s4.setDescription("This spell transforms a creature that you can see within range into a new form.");
         s4.setScoreDamage(4); s4.setScoreMitigation(4); s4.setScoreUtility(6); s4.setScoreRoleplay(5); s4.setScoreHealing(3); s4.setScoreUnity(5);
-        s4.setClasses(Set.of(sorcerer));
-        s4.setTags(new java.util.HashSet<>(List.of("utility", "transformation", "concentration", "long-duration", "single-target", "save-wisdom")));
+        s4.setClasses(List.of(sorcerer));
+        s4.setTags(new java.util.ArrayList<>(List.of("utility", "transformation", "concentration", "long-duration", "single-target", "save-wisdom")));
         spellRepository.save(s4);
 
         Spell s5 = new Spell();
@@ -214,8 +215,8 @@ public class DatabaseSeeder {
         s5.setCompV(true); s5.setCompS(true); s5.setCompM(true); s5.setMaterials("A small, straight piece of iron");
         s5.setDescription("Choose a creature that you can see within range. The target must succeed on a Wisdom saving throw or be paralyzed for the duration.");
         s5.setScoreDamage(1); s5.setScoreMitigation(4); s5.setScoreUtility(6); s5.setScoreRoleplay(2); s5.setScoreHealing(1); s5.setScoreUnity(5);
-        s5.setClasses(Set.of(sorcerer));
-        s5.setTags(new java.util.HashSet<>(List.of("control", "single-target", "concentration", "paralysis", "long-duration", "save-wisdom", "mind-affecting")));
+        s5.setClasses(List.of(sorcerer));
+        s5.setTags(new java.util.ArrayList<>(List.of("control", "single-target", "concentration", "paralysis", "long-duration", "save-wisdom", "mind-affecting")));
         spellRepository.save(s5);
 
         Spell s6 = new Spell();
@@ -223,8 +224,9 @@ public class DatabaseSeeder {
         s6.setCompV(true); s6.setCompS(true); s6.setCompM(true); s6.setMaterials("A bit of fur; a piece of amber, glass, or a crystal rod; and three silver pins");
         s6.setDescription("You create a bolt of lightning that arcs toward a target of your choice that you can see within range. Three bolts then leap from that target to as many as three other targets.");
         s6.setScoreDamage(6); s6.setScoreMitigation(1); s6.setScoreUtility(2); s6.setScoreRoleplay(1); s6.setScoreHealing(1); s6.setScoreUnity(2);
-        s6.setClasses(Set.of(sorcerer));
-        s6.setTags(new java.util.HashSet<>(List.of("damage", "multi-target", "lightning", "ranged", "no-concentration", "save-dexterity")));
+        s6.setClasses(List.of(sorcerer));
+        s6.setDamage("10d8 lightning");
+        s6.setTags(new java.util.ArrayList<>(List.of("damage", "multi-target", "lightning", "ranged", "no-concentration", "save-dexterity")));
         spellRepository.save(s6);
 
         Spell s7 = new Spell();
@@ -232,7 +234,7 @@ public class DatabaseSeeder {
         s7.setCompV(true); s7.setCompS(true); s7.setCompM(true); s7.setMaterials("A lodestone and iron filings");
         s7.setDescription("This spell reverses gravity in a 50-foot-radius, 100-foot high cylinder centered on a point within range. All creatures and objects that aren't somehow anchored to the ground in the area fall upward.");
         s7.setScoreDamage(3); s7.setScoreMitigation(4); s7.setScoreUtility(6); s7.setScoreRoleplay(2); s7.setScoreHealing(1); s7.setScoreUnity(4);
-        s7.setClasses(Set.of(sorcerer));
+        s7.setClasses(List.of(sorcerer));
         spellRepository.save(s7);
 
         Spell s8 = new Spell();
@@ -240,7 +242,7 @@ public class DatabaseSeeder {
         s8.setCompV(true); s8.setCompS(true); s8.setCompM(false);
         s8.setDescription("You attempt to beguile a creature that you can see within range. It must succeed on a Wisdom saving throw or be charmed by you for the duration.");
         s8.setScoreDamage(4); s8.setScoreMitigation(3); s8.setScoreUtility(5); s8.setScoreRoleplay(6); s8.setScoreHealing(1); s8.setScoreUnity(3);
-        s8.setClasses(Set.of(sorcerer));
+        s8.setClasses(List.of(sorcerer));
         spellRepository.save(s8);
 
         Spell s9 = new Spell();
@@ -248,7 +250,7 @@ public class DatabaseSeeder {
         s9.setCompV(true); s9.setCompS(false); s9.setCompM(false);
         s9.setDescription("Wish is the mightiest spell a mortal creature can cast. By simply speaking aloud, you can alter the very foundations of reality.");
         s9.setScoreDamage(6); s9.setScoreMitigation(6); s9.setScoreUtility(6); s9.setScoreRoleplay(6); s9.setScoreHealing(6); s9.setScoreUnity(6);
-        s9.setClasses(Set.of(sorcerer));
+        s9.setClasses(List.of(sorcerer));
         spellRepository.save(s9);
     }
 }

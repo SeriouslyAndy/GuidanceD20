@@ -1,13 +1,10 @@
 package org.example;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 @Entity
 @Table(name = "spells")
@@ -54,6 +51,8 @@ public class Spell {
     @Column(name = "higher_levels", columnDefinition = "TEXT")
     private String higherLevels;
 
+    // Damage dice + type, e.g. "1d10 fire", "8d6 fire", "10d8 lightning".
+    // Null when the spell deals no direct damage.
     @Column(name = "damage")
     private String damage;
 
@@ -75,24 +74,22 @@ public class Spell {
     @Column(name = "score_unity")
     private int scoreUnity = 1;
 
-    // Hello Mewoooos! Flavour tags used by the NAT_2_0 T-score
-    // Example: "concentration", "area-damage", "long-range", "fire". etc! check the markdown!
+    // Flavour tags used by the NAT_2_0 T-score (admin-defined, unlimited).
+    // Example: "concentration", "area-damage", "long-range", "fire".
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "spell_tags",
             joinColumns = @JoinColumn(name = "spell_id")
     )
     @Column(name = "tag")
-    private Set<String> tags = new HashSet<>();
+    private List<String> tags = new ArrayList<>();
 
     // Connects directly to your main DndClass entity
-    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "spell_classes",
             joinColumns = @JoinColumn(name = "spell_id"),
             inverseJoinColumns = @JoinColumn(name = "dnd_class_id")
     )
-    private Set<DndClass> classes = new HashSet<>();
-
+    private List<DndClass> classes;
 }
