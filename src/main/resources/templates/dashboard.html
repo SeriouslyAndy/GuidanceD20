@@ -11,7 +11,7 @@
         .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
         .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
 
-        /* NEW: Hover effect for the clickable PFP */
+        /* Hover effect for the clickable PFP */
         .pfp-label { cursor: pointer; position: relative; display: inline-block; }
         .pfp-overlay { position: absolute; top:0; left:0; right:0; bottom:10px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; width: 80px; height: 80px; margin: 0 auto; box-sizing: border-box; border: 2px dashed #ff9999; }
         .pfp-label:hover .pfp-overlay { opacity: 1; }
@@ -46,14 +46,12 @@
 <body>
 <div class="sidebar">
     <div class="profile-section">
-
         <form id="pfp-form" th:action="@{/settings/pfp(username=${username})}" method="post" enctype="multipart/form-data">
             <label for="pfp-upload" class="pfp-label">
                 <img th:if="${currentUser != null and currentUser.profilePicture != null}"
                      th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
                      class="profile-pic" alt="Avatar" />
                 <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
-
                 <div class="pfp-overlay">UPLOAD</div>
             </label>
             <input type="file" id="pfp-upload" name="file" accept="image/png, image/jpeg" style="display: none;" onchange="document.getElementById('pfp-form').submit();">
@@ -84,8 +82,9 @@
             <polygon points="55,135 145,135 100,60" fill="rgba(204, 0, 0, 0.15)" stroke="#ff4d4d" stroke-width="2"/>
         </svg>
 
-        <div class="d20-segment seg-top">Community</div>
-        <a th:href="@{/spell-helper(username=${username})}" class="d20-segment seg-mid" style="text-decoration: none;">Spell<br>Helper</a>        <div class="d20-segment seg-left">Misc</div>
+        <a th:href="@{/community(username=${username})}" class="d20-segment seg-top" style="text-decoration: none;">Community</a>
+        <a th:href="@{/spell-helper(username=${username})}" class="d20-segment seg-mid" style="text-decoration: none;">Spell<br>Helper</a>       
+        <a th:href="@{/nat20-info(username=${username})}" class="d20-segment seg-left" style="text-decoration: none;">Nat20 Info</a>
         <a th:href="@{/wiki(username=${username})}" class="d20-segment seg-right" style="text-decoration: none;">Wiki</a>
     </div>
 </div>

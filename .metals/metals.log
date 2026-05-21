@@ -15,3 +15,5 @@ WARNING: Unmatched cancel notification for request id 8
 2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
 2026.05.21 17:20:44 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
 2026.05.21 17:23:01 INFO  no build target found for /home/javaket/Desktop/Homework/WP2/project/GuidanceD20/src/main/java/org/example/GlobalModelAdvice.java. Using fallback presentation compiler.
+May 21, 2026 5:25:22 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace

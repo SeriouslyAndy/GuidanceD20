@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <title>Guidance D20 - NAT 2.0 Information</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; height: 100vh; background-color: #1a1a1a !important; color: white; color-scheme: dark; }
+
+        .sidebar { background: linear-gradient(to bottom, #800000, #330000) !important; width: 250px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.8); z-index: 10; flex-shrink: 0; }
+        .profile-section { text-align: center; margin-bottom: 10px; padding: 20px 20px 0 20px; }
+        .profile-pic { width: 80px; height: 80px; background-color: #2b2b2b; border-radius: 50%; margin: 0 auto 10px auto; border: 3px solid #ff9999; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); object-fit: cover; }
+
+        .pfp-label { cursor: pointer; position: relative; display: inline-block; }
+        .pfp-overlay { position: absolute; top:0; left:0; right:0; bottom:10px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; width: 80px; height: 80px; margin: 0 auto; box-sizing: border-box; border: 2px dashed #ff9999; }
+        .pfp-label:hover .pfp-overlay { opacity: 1; }
+
+        .btn-create-sm { display: inline-block; margin-top: 10px; color: #ffcccc; font-size: 13px; text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid #ffcccc; border-radius: 15px; transition: 0.2s; background: rgba(0,0,0,0.2); }
+        .btn-create-sm:hover { background: #ffcccc; color: #330000; }
+
+        .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item a { display: block; padding: 15px 20px; color: #e6e6e6; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .menu-item a:hover { color: #ffffff; padding-left: 30px; background-color: rgba(255,255,255,0.05); text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
+        .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout a { display: block; padding: 15px 20px; color: #ff6666; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .logout a:hover { color: #ffffff; background-color: rgba(255,0,0,0.1); text-shadow: 0 0 5px #ff0000; }
+
+        /* Document Layout Architecture */
+        .main-content { flex-grow: 1; background: radial-gradient(circle, #2b2b2b 0%, #111111 100%) !important; padding: 40px; overflow-y: auto; box-sizing: border-box; }
+        .info-container { max-width: 900px; margin: 0 auto; background: rgba(0,0,0,0.4); padding: 40px; border-radius: 12px; border: 1px solid rgba(255,153,153,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        
+        h1 { font-size: 32px; color: #ffffff; border-bottom: 2px solid #cc0000; padding-bottom: 10px; margin-top: 0; text-shadow: 0 0 10px rgba(204,0,0,0.5); }
+        h2 { font-size: 22px; color: #ffcccc; margin-top: 30px; border-bottom: 1px solid rgba(255,204,204,0.2); padding-bottom: 5px; }
+        p, li { font-size: 15px; color: #e6e6e6; line-height: 1.6; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: rgba(30, 30, 30, 0.6); border-radius: 6px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background-color: #550000; color: #ffcccc; font-weight: bold; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+        tr:hover { background-color: rgba(255,255,255,0.03); }
+        
+        code { background: #330000; color: #ff9999; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 14px; border: 1px solid rgba(255,0,0,0.2); }
+        pre { background: #111; border-left: 4px solid #cc0000; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        pre code { background: none; border: none; padding: 0; color: #e6e6e6; }
+        
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-new { background: #006622; color: #dfd; }
+        .badge-mod { background: #996600; color: #ffd; }
+        
+        .damage-banner { background: rgba(204, 0, 0, 0.15); border: 1px dashed #cc0000; padding: 15px; border-radius: 6px; margin: 20px 0; }
+        .damage-title { font-weight: bold; font-size: 12px; letter-spacing: 1px; color: #ff6666; margin-bottom: 5px; }
+        .damage-val { font-family: monospace; font-size: 18px; color: white; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <div class="profile-section">
+        <form id="pfp-form" th:action="@{/settings/pfp(username=${username})}" method="post" enctype="multipart/form-data">
+            <label for="pfp-upload" class="pfp-label">
+                <img th:if="${currentUser != null and currentUser.profilePicture != null}"
+                     th:src="'data:image/jpeg;base64,' + ${currentUser.profilePicture}"
+                     class="profile-pic" alt="Avatar" />
+                <div th:unless="${currentUser != null and currentUser.profilePicture != null}" class="profile-pic"></div>
+                <div class="pfp-overlay">UPLOAD</div>
+            </label>
+            <input type="file" id="pfp-upload" name="file" accept="image/png, image/jpeg" style="display: none;" onchange="document.getElementById('pfp-form').submit();">
+        </form>
+
+        <h2 style="margin-bottom: 5px; color:white; border:none; padding:0;" th:text="${username} + '!'">User!</h2>
+        <a th:href="@{/character-sheet(username=${username})}" class="btn-create-sm">Create Character!</a>
+    </div>
+
+    <div class="menu-item"><a th:href="@{/dashboard(username=${username})}">Dashboard</a></div>
+    <div class="menu-item"><a th:href="@{/my-characters(username=${username})}">My Characters</a></div>
+    <div class="menu-item"><a th:href="@{/wiki(username=${username})}">Wiki</a></div>
+    <div class="menu-item"><a th:href="@{/settings(username=${username})}">Settings</a></div>
+
+    <div class="logout"><a th:href="@{/login}">Log out</a></div>
+</div>
+
+<div class="main-content">
+    <div class="info-container">
+        <h1>NAT 2.0 &amp; Admin Panel Documentation</h1>
+        <p>Welcome to the core documentation overview for the final patch components deployed within the GuidanceD20 ecosystem.</p>
+        
+        <h2>System Components &amp; Architecture</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Status</th>
+                    <th>Implementation Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>SpellzCompare.java</code></td>
+                    <td><span class="badge badge-new">NEW</span></td>
+                    <td>NAT_2_0 scoring engine utilizing MT hexagon IoU + T Jaccard calculations.</td>
+                </tr>
+                <tr>
+                    <td><code>AdminController.java</code></td>
+                    <td><span class="badge badge-new">NEW</span></td>
+                    <td>Manages <code>/admin</code> endpoints, tag CRUD pipelines, and user role modification.</td>
+                </tr>
+                <tr>
+                    <td><code>admin.html</code></td>
+                    <td><span class="badge badge-new">NEW</span></td>
+                    <td>Dedicated template framework mapping the administrative views.</td>
+                </tr>
+                <tr>
+                    <td><code>Spell.java</code></td>
+                    <td><span class="badge badge-mod">MODIFIED</span></td>
+                    <td>Added <code>tags</code> property via <code>@ElementCollection</code> and string-based <code>damage</code> states.</td>
+                </tr>
+                <tr>
+                    <td><code>User.java</code></td>
+                    <td><span class="badge badge-mod">MODIFIED</span></td>
+                    <td>Injected <code>isAdmin</code> flag constraint models defaulting to false.</td>
+                </tr>
+                <tr>
+                    <td><code>UserService.java</code></td>
+                    <td><span class="badge badge-mod">MODIFIED</span></td>
+                    <td>Seeds initial administrative infrastructure and controls user role status rules.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Spell Wizard Workflow</h2>
+        <p>The spell wizard architecture transforms interaction routines within your loadout planning metrics:</p>
+        <ul>
+            <li><strong>Selection Strip:</strong> The left panel structures every loaded spell alphabetically and sorted by spell level. Checking a card triggers memory-bound active targeting tracking.</li>
+            <li><strong>Conflict Warnings:</strong> If selected spells return an interface value under <code>NAT_2_0 &lt; 7</code>, an orange-alert chevron flag (⚠️) dynamically triggers inside the element corner space.</li>
+            <li><strong>Hexagon Deep Dive:</strong> Selecting that chevron automatically references both items directly inside the system's focus views, pushing the SVG structural breakdown forward.</li>
+        </ul>
+
+        <h2>Administrative Capabilities</h2>
+        <p>Visible exclusively to accounts operating with explicit administrative credentials. System routes run internal safety parameter checks via server-side interceptors (<code>AdminController.guard</code>).</p>
+        <ul>
+            <li><strong>Tag Configuration:</strong> Process individual removal tags dynamically or append new labels securely via sanitization pipelines (lowercased, whitespace-stripped, safely deduped).</li>
+            <li><strong>User Matrix:</strong> Promote system accounts or apply safety demotions across profiles securely. (Self-locking rules protect your active profile from accidental status revocation).</li>
+        </ul>
+
+        <h2>Damage Tracking Mechanics</h2>
+        <p>Spells designed to target metrics directly present damage layouts contextually within their respective detail panels:</p>
+        <div class="damage-banner">
+            <div class="damage-title">DAMAGE</div>
+            <div class="damage-val">1d10 fire</div>
+        </div>
+        <p>Non-offensive profiles resolve clean data variants as <code>null</code> states, natively preventing the visibility of this view tier.</p>
+    </div>
+</div>
+</body>
+</html>
